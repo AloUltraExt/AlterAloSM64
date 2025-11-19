@@ -91,14 +91,34 @@
 #endif /* __GNUC__ < 2 */
 
 #if defined (__mips__)
-#define umul_ppmm(w1, w0, u, v) \
-  __asm__ ("multu %2,%3"						\
-	   : "=l" ((USItype) (w0)),					\
-	     "=h" ((USItype) (w1))					\
-	   : "d" ((USItype) (u)),					\
-	     "d" ((USItype) (v)))
-#define UMUL_TIME 10
-#define UDIV_TIME 100
+# if defined (__clang__) || (__GNUC__ >= 5) || (__GNUC__ == 4 && \
+                                               __GNUC_MINOR__ >= 4)
+#  define umul_ppmm(w1, w0, u, v) \
+  do {                                                                  \
+    UDItype _r;                                                         \
+    _r = (UDItype)(u) * (v);                                            \
+    (w1) = _r >> 32;                                                    \
+    (w0) = (USItype) _r;                                                \
+  } while (0)
+# elif __GNUC__ > 2 || __GNUC_MINOR__ >= 7
+#  define umul_ppmm(w1, w0, u, v) \
+  __asm__ ("multu %2,%3"                                                \
+	   : "=l" ((USItype)(w0)),                                      \
+	     "=h" ((USItype)(w1))                                       \
+	   : "d" ((USItype)(u)),                                        \
+	     "d" ((USItype)(v)))
+# else
+#  define umul_ppmm(w1, w0, u, v) \
+  __asm__ ("multu %2,%3 \n" \
+	   "mflo %0 \n"     \
+	   "mfhi %1"                                                    \
+	   : "=d" ((USItype)(w0)),                                      \
+	     "=d" ((USItype)(w1))                                       \
+	   : "d" ((USItype)(u)),                                        \
+	     "d" ((USItype)(v)))
+# endif
+# define UMUL_TIME 10
+# define UDIV_TIME 100
 #endif /* __mips__ */
 
 #endif /* __GNUC__ */

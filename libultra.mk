@@ -18,7 +18,7 @@ LIBULTRA_REVISION ?= 0
 LIBULTRA_EXCLUSIVE ?= 0
 
 # LIBULTRA - sets the libultra OS version to use
-$(eval $(call validate-option,LIBULTRA,D F H I K L BB))
+$(eval $(call validate-option,LIBULTRA,D F H I J K L BB))
 
 ULTRA_VER_D := 1
 ULTRA_VER_E := 2
@@ -86,6 +86,7 @@ GULTRA_CC     := COMPILER_PATH=$(EGCS_PATH) $(EGCS_PATH)/gcc
 GULTRA_CFLAGS  = -mcpu=r4300 -fno-pic -Wa,--strip-local-absolute -G 0
 GULTRA_ASFLAGS = -mcpu=r4300 -fno-pic -x assembler-with-cpp -c -DEGCS_GCC
 
+ifneq ($(COMPILER),gcc)
 ifeq ($(LIBGULTRA),1)
   $(ULTRA_O_C_FILES): CC := $(GULTRA_CC)
   $(ULTRA_O_C_FILES): CFLAGS = $(GULTRA_CFLAGS) $(NOABICALL) $(REG_SIZES)
@@ -102,8 +103,10 @@ else
   $(ULTRA_O_AS_FILES): OPT_FLAGS :=
   $(ULTRA_O_AS_FILES): MIPSISET := -mips2
 endif
+endif
 
 # Libultra specific flags
+ifeq ($(NON_MATCHING),0)
 ifneq ($(LIBULTRA),BB)
   $(BUILD_DIR)/lib/ultra/os/exceptasm.o:   MIPSISET    := -mips3
   $(BUILD_DIR)/lib/ultra/libc/%.o:         ASOPT_FLAGS := -O2
@@ -111,7 +114,6 @@ ifneq ($(LIBULTRA),BB)
   $(BUILD_DIR)/lib/ultra/libc/ll%.o:       MIPSISET    := -mips3 -32
 endif
 
-ifeq ($(NON_MATCHING),0)
   $(BUILD_DIR)/lib/ultra/%.o:                OPT_FLAGS :=
 
   $(BUILD_DIR)/lib/ultra/audio/bnkf.o:       OPT_FLAGS := -O3
@@ -148,6 +150,8 @@ ifeq ($(NON_MATCHING),0)
   endif
 endif
 
+ifneq ($(COMPILER),gcc)
+
 $(BUILD_DIR)/lib/ultra/%.o: lib/ultra/%.c
 	$(call print,Compiling:,$<,$@)
 	$(V)$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/lib/ultra/$*.d $<
@@ -168,8 +172,12 @@ $(BUILD_DIR)/lib/ultra/io/driverominit.o: lib/ultra/io/driverominit.c
 	$(V)$(ULTRA_CC) -c $(ULTRA_CFLAGS) $(TARGET_CFLAGS) $(DEF_INC_CFLAGS) -mips2 -g -o $@ $<
 endif
 
+endif
+
 # Link libultra
 $(LIBULTRA_AR): $(ULTRA_O_FILES)
 	@$(PRINT) "$(GREEN)Linking libultra:  $(BLUE)$@ $(NO_COL)\n"
 	$(V)$(AR) rcs -o $@ $(ULTRA_O_FILES)
+ifeq ($(NON_MATCHING),0)
 	$(V)$(TOOLS_DIR)/patch_elf_32bit $@
+endif

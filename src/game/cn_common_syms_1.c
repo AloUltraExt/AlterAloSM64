@@ -4,6 +4,8 @@
 
 // This file is used to place iQue COMMON/.scommon symbols in the right locations.
 
+#ifndef NON_MATCHING
+
 #ifdef VERSION_CN
 FORCE_BSS u32 __osBaseCounter;
 FORCE_BSS s16 gSaveOptSelectIndex;
@@ -26,4 +28,6 @@ FORCE_BSS s8 gRedCoinsCollected;
 FORCE_BSS s16 gSavedCourseNum;
 FORCE_BSS u32 __osFinalrom;
 FORCE_BSS s16 gCurrCourseNum;
+#endif
+
 #endif

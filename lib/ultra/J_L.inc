@@ -56,8 +56,12 @@
         BUILD_DIR/libultra.a:viswapbuf.o(.SECTION);
         BUILD_DIR/libultra.a:viswapcontext.o(.SECTION);
         BUILD_DIR/libultra.a:viblack.o(.SECTION);
+#if LIBULTRA_VERSION >= OS_VER_K
         BUILD_DIR/libultra.a:mtxidentf.o(.SECTION);
         BUILD_DIR/libultra.a:mtxf2l.o(.SECTION);
+#else
+        BUILD_DIR/libultra.a:mtxutil.o(.SECTION);
+#endif
         BUILD_DIR/libultra.a:scale.o(.SECTION);
         BUILD_DIR/libultra.a:translate.o(.SECTION);
         BUILD_DIR/libultra.a:rotate.o(.SECTION);

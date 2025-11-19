@@ -4,6 +4,7 @@
 #include "types.h"
 
 // This file is used to place iQue COMMON/.scommon symbols in the right locations.
+#ifndef NON_MATCHING
 
 #ifdef VERSION_CN
 // Can't include the .h files directly because they have extern declarations
@@ -100,4 +101,6 @@ FORCE_BSS __OSEventState __osEventStateTab[OS_NUM_EVENTS];
 FORCE_BSS ALIGNED8 OSMesgQueue __osEepromTimerQ;
 FORCE_BSS struct Area gAreaData[8];
 FORCE_BSS ALIGNED8 OSMesgQueue __osSiAccessQueue;
+#endif
+
 #endif

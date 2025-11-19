@@ -48,11 +48,7 @@ static void start_rumble(void) {
 
     block_until_rumble_pak_free();
 
-#ifdef VERSION_CN
-    if (!__osMotorAccess(&gRumblePakPfs, MOTOR_START)) {
-#else
     if (!osMotorStart(&gRumblePakPfs)) {
-#endif
         sRumblePakErrorCount = 0;
     } else {
         sRumblePakErrorCount++;
@@ -68,11 +64,7 @@ static void stop_rumble(void) {
 
     block_until_rumble_pak_free();
 
-#ifdef VERSION_CN
-    if (!__osMotorAccess(&gRumblePakPfs, MOTOR_STOP)) {
-#else
     if (!osMotorStop(&gRumblePakPfs)) {
-#endif
         sRumblePakErrorCount = 0;
     } else {
         sRumblePakErrorCount++;
@@ -277,11 +269,7 @@ void cancel_rumble(void) {
     sRumblePakActive = osMotorInit(&gSIEventMesgQueue, &gRumblePakPfs, gPlayer1Controller->port) == 0;
 
     if (sRumblePakActive) {
-#ifdef VERSION_CN
-        __osMotorAccess(&gRumblePakPfs, MOTOR_STOP);
-#else
         osMotorStop(&gRumblePakPfs);
-#endif
     }
 
     gRumbleDataQueue[0].unk00 = 0;

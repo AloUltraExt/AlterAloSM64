@@ -230,7 +230,7 @@ SECTIONS
 #undef JP_PADDING_TEXT
 #endif
 
-#ifdef VERSION_CN
+#ifndef __sgi
         BUILD_DIR/libgcc.a:_divdi3.o(.text);
         BUILD_DIR/libgcc.a:_moddi3.o(.text);
         BUILD_DIR/libgcc.a:_udivdi3.o(.text);
@@ -242,6 +242,12 @@ SECTIONS
         BUILD_DIR/libgcc.a:_fixdfdi.o(.text);
         BUILD_DIR/libgcc.a:_fixunssfdi.o(.text);
         BUILD_DIR/libgcc.a:_fixsfdi.o(.text);
+#ifdef AVOID_UB
+        BUILD_DIR/libgcc.a:_lshrdi3.o(.text);
+        BUILD_DIR/libgcc.a:memcmp.o(.text);
+        BUILD_DIR/libgcc.a:memmove.o(.text);
+        BUILD_DIR/libgcc.a:memset.o(.text);
+#endif
 #endif
         BUILD_DIR/lib/rsp.o(.text);
 
@@ -348,6 +354,7 @@ SECTIONS
         BUILD_DIR/src/game/object_helpers.o(.rodata*);
 #endif
         BUILD_DIR/src/game/behavior_actions.o(.rodata*);
+        BUILD_DIR/src/game/platform_displacement.o(.rodata*);
 #ifndef VERSION_EU
         BUILD_DIR/src/game/object_collision.o(.rodata*);
         BUILD_DIR/src/game/spawn_object.o(.rodata*);
@@ -390,7 +397,7 @@ SECTIONS
         #include "lib/ultra/ld.inc"
 #undef SECTION
 
-#ifdef VERSION_CN
+#ifndef __sgi
         BUILD_DIR/libgcc.a:_divdi3.o(.rodata*);
         BUILD_DIR/libgcc.a:_moddi3.o(.rodata*);
         BUILD_DIR/libgcc.a:_udivdi3.o(.rodata*);
@@ -402,6 +409,11 @@ SECTIONS
         BUILD_DIR/libgcc.a:_fixdfdi.o(.rodata*);
         BUILD_DIR/libgcc.a:_fixunssfdi.o(.rodata*);
         BUILD_DIR/libgcc.a:_fixsfdi.o(.rodata*);
+#ifdef AVOID_UB
+        BUILD_DIR/libgcc.a:memcmp.o(.rodata*);
+        BUILD_DIR/libgcc.a:memmove.o(.rodata*);
+        BUILD_DIR/libgcc.a:memset.o(.rodata*);
+#endif
 #endif
         /* audio blobs, should really be moved into a separate file */
 #if defined(VERSION_SH) || defined(VERSION_CN)

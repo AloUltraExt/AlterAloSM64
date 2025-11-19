@@ -12,7 +12,7 @@
 .byte 20 /* Major version 2.0 */
 .ascii LIBULTRA_STR_VER /* Minor Version */
 
-#ifdef VERSION_CN
+#if defined(VERSION_CN) && !defined(AVOID_UB)
     .fill 0x30
 #else
 

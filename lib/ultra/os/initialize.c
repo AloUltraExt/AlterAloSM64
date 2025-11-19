@@ -28,7 +28,8 @@ u32 __osLeoPresent = 0;
 u32 __osFinalrom;
 #endif
 
-#if LIBULTRA_VERSION >= OS_VER_K
+#if LIBULTRA_VERSION >= OS_VER_J
+// This function is static only in 2.0J
 void __createSpeedParam(void) {
     __Dom1SpeedParam.type = DEVICE_TYPE_INIT;
     __Dom1SpeedParam.latency = IO_READ(PI_BSD_DOM1_LAT_REG);
@@ -46,7 +47,7 @@ void __createSpeedParam(void) {
 
 void __osInitialize_common(void) {
     u32 pifdata;
-#if LIBULTRA_VERSION < OS_VER_K
+#if LIBULTRA_VERSION < OS_VER_J
     u32 clock = 0;
 #endif
 
@@ -163,7 +164,7 @@ void __osInitialize_common(void) {
         IO_WRITE(SI_1C_REG, (IO_READ(SI_1C_REG) & 0x80FFFFFF) | 0x2F400000);
     }
 #endif
-#if LIBULTRA_VERSION >= OS_VER_K
+#if LIBULTRA_VERSION >= OS_VER_J
     IO_WRITE(AI_CONTROL_REG, AI_CONTROL_DMA_ON);
     IO_WRITE(AI_DACRATE_REG, AI_MAX_DAC_RATE - 1);
     IO_WRITE(AI_BITRATE_REG, AI_MAX_BIT_RATE - 1);
@@ -183,21 +184,5 @@ void __osInitialize_autodetect(void) {
         __osInitialize_emu();
     }
 #endif
-}
-#endif
-
-#if LIBULTRA_VERSION == OS_VER_J
-void createSpeedParam(void) {
-    __Dom1SpeedParam.type = DEVICE_TYPE_INIT;
-    __Dom1SpeedParam.latency = IO_READ(PI_BSD_DOM1_LAT_REG);
-    __Dom1SpeedParam.pulse = IO_READ(PI_BSD_DOM1_PWD_REG);
-    __Dom1SpeedParam.pageSize = IO_READ(PI_BSD_DOM1_PGS_REG);
-    __Dom1SpeedParam.relDuration = IO_READ(PI_BSD_DOM1_RLS_REG);
-
-    __Dom2SpeedParam.type = DEVICE_TYPE_INIT;
-    __Dom2SpeedParam.latency = IO_READ(PI_BSD_DOM2_LAT_REG);
-    __Dom2SpeedParam.pulse = IO_READ(PI_BSD_DOM2_PWD_REG);
-    __Dom2SpeedParam.pageSize = IO_READ(PI_BSD_DOM2_PGS_REG);
-    __Dom2SpeedParam.relDuration = IO_READ(PI_BSD_DOM2_RLS_REG);
 }
 #endif

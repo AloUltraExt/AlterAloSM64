@@ -1,3 +1,12 @@
+Refresh 16.5+ (AlterAloSM64)
+1.) Proper GCC support across all versions (#1215)
+
+1.) Fix build with make-4.4. (#1218)
+2.) Split src/audio/ into separate directories per version (#1219)
+3.) Remove unused string defines for PAL (#1216)
+4.) Update armips.cpp (#1217)
+5.) Libultra and OS related assembly cleanup, compiler improvements and more (#1210)
+
 Refresh 16.5 (Another two years later...)
 
 1.) Fix build with make-4.4. (#1218)

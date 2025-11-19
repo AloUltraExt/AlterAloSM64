@@ -143,6 +143,17 @@ ifeq ($(filter $(TARGET_STRING), sm64.jp.f3d_old sm64.us.f3d_old sm64.eu.f3d_new
   COMPARE := 0
 endif
 
+# CHECKSUM - whether to set a checksum for the ROM
+#   1 - sets the checksum values inside the ROM
+#   0 - does not sets a checksum, leaving all values with zero
+CHECKSUM ?= 1
+
+ifeq ($(NON_MATCHING),0)
+  ifeq ($(VERSION),cn)
+    CHECKSUM := 0
+  endif
+endif
+
 # Whether to hide commands or not
 VERBOSE ?= 0
 ifeq ($(VERBOSE),0)
@@ -238,9 +249,12 @@ SRC_DIRS := src src/engine src/game src/menu src/buffers src/audio $(AUDIO_SRC_D
 BIN_DIRS := bin bin/$(VERSION)
 
 ifeq ($(VERSION),cn)
-  LIBGCC_SRC_DIRS += lib/src/libgcc
+  LIBGCC_SRC_DIRS += lib/gcc
 endif
 
+ifeq ($(COMPILER),gcc)
+  LIBGCC_SRC_DIRS += lib/gcc
+endif
 GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 
 # File dependencies and variables for specific files
@@ -300,12 +314,18 @@ EGCS_PATH := $(TOOLS_DIR)/egcs
 LD_PATH := $(TOOLS_DIR)/ld
 
 # detect prefix for MIPS toolchain
-ifneq      ($(call find-command,mips-linux-gnu-ld),)
+ifneq ($(call find-command,mips64-elf-ld),)
+  CROSS := mips64-elf-
+# else ifneq ($(call find-command,mips-n64-ld),)
+#   CROSS := mips-n64-
+else ifneq ($(call find-command,mips64-ld),)
+  CROSS := mips64-
+else ifneq ($(call find-command,mips-linux-gnu-ld),)
   CROSS := mips-linux-gnu-
 else ifneq ($(call find-command,mips64-linux-gnu-ld),)
   CROSS := mips64-linux-gnu-
-else ifneq ($(call find-command,mips64-elf-ld),)
-  CROSS := mips64-elf-
+else ifneq ($(call find-command,mips-ld),)
+  CROSS := mips-
 else
   $(error Unable to detect a suitable MIPS toolchain installed)
 endif
@@ -353,6 +373,8 @@ EGCS_ASFLAGS = -mcpu=r4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i))
 
 include libultra.mk
 
+ifeq ($(NON_MATCHING),0)
+
 ifeq ($(VERSION),cn)
   EGCS_REASSEMBLED_ASM_FILES := $(wildcard asm/*.s)
   EGCS_REASSEMBLED_ASM_FILES := $(filter-out asm/ipl3_font.s, $(EGCS_REASSEMBLED_ASM_FILES))
@@ -372,6 +394,8 @@ ifeq ($(VERSION),cn)
   $(IQUE_RECOMPILED): CC := $(EGCS_CC)
   $(IQUE_RECOMPILED): CFLAGS = $(EGCS_CFLAGS)
   $(IQUE_RECOMPILED): MIPSISET :=
+endif
+
 endif
 
 # Prefer clang as C preprocessor if installed on the system
@@ -396,6 +420,8 @@ else
 endif
 
 ASFLAGS     := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
+ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
+
 RSPASMFLAGS := $(foreach d,$(DEFINES),-definelabel $(subst =, ,$(d)))
 
 ifeq ($(shell getconf LONG_BIT), 32)
@@ -714,7 +740,7 @@ ifeq ($(NON_MATCHING),0)
   $(BUILD_DIR)/src/goddard/%.o:      OPT_FLAGS := -g
   $(BUILD_DIR)/src/goddard/%.o:      MIPSISET := -mips1
   ifeq ($(VERSION),cn)
-    $(BUILD_DIR)/lib/src/libgcc/%.o:            OPT_FLAGS := -O2 -g -mips2
+    $(BUILD_DIR)/lib/gcc/%.o:        OPT_FLAGS := -O2 -g -mips2
   endif
 
   # Audio specific flags:
@@ -765,7 +791,11 @@ endif
 # Assemble assembly code
 $(BUILD_DIR)/%.o: %.s
 	$(call print,Assembling:,$<,$@)
-	$(V)$(CPP) $(CPPFLAGS) -D_LANGUAGE_ASSEMBLY=1 $< | $(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@
+ifeq ($(COMPILER),gcc)
+	$(V)$(CC) -c $(ASMFLAGS) -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d -o $@ $<
+else
+	$(V)$(CPP) $(CPPFLAGS) -D_LANGUAGE_ASSEMBLY  $< | $(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@
+endif
 
 # Assemble RSP assembly code
 $(BUILD_DIR)/rsp/%.bin $(BUILD_DIR)/rsp/%_data.bin: rsp/%.s
@@ -801,11 +831,11 @@ endif
 
 $(ROM): $(ELF)
 	$(call print,Building ROM:,$<,$@)
-ifeq ($(VERSION),cn) # cn has no checksums
-	$(V)$(OBJCOPY) $(PAD_TO_GAP_FILL) $< $(@) -O binary
-else
+ifeq ($(CHECKSUM),1)
 	$(V)$(OBJCOPY) $(PAD_TO_GAP_FILL) $< $(@:.z64=.bin) -O binary
 	$(V)$(N64CKSUM) $(@:.z64=.bin) $@
+else
+	$(V)$(OBJCOPY) $(PAD_TO_GAP_FILL) $< $(@) -O binary
 endif
 
 $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
