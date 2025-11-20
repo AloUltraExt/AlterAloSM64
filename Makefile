@@ -20,11 +20,8 @@ TARGET_N64 ?= 1
 
 
 # COMPILER - selects the C compiler to use
-#   ido - uses the SGI IRIS Development Option compiler, which is used to build
-#         an original matching N64 ROM
-#   gcc - uses the GNU C Compiler
-COMPILER ?= ido
-$(eval $(call validate-option,COMPILER,ido gcc))
+COMPILER ?= gcc
+$(eval $(call validate-option,COMPILER, gcc))
 
 
 # VERSION - selects the version of the game to build
@@ -92,56 +89,11 @@ else ifeq ($(GRUCODE),f3dzex) # Fast3DZEX (2.0J / Animal Forest - Dōbutsu no Mo
   DEFINES += F3DZEX_GBI_2=1 F3DEX_GBI_2=1 F3DEX_GBI_SHARED=1
 endif
 
-# USE_QEMU_IRIX - when ido is selected, select which way to emulate IRIX programs
-#   1 - use qemu-irix
-#   0 - statically recompile the IRIX programs
-USE_QEMU_IRIX ?= 0
-$(eval $(call validate-option,USE_QEMU_IRIX,0 1))
+# Mandatory defines to ensture correct compilation
+DEFINES += NON_MATCHING=1 AVOID_UB=1
 
-ifeq      ($(COMPILER),ido)
-  ifeq ($(USE_QEMU_IRIX),1)
-    # Verify that qemu-irix exists
-    QEMU_IRIX ?= $(call find-command,qemu-irix)
-    ifeq (, $(QEMU_IRIX))
-      $(error Using the IDO compiler requires qemu-irix. Please install qemu-irix package or set the QEMU_IRIX environment variable to the full qemu-irix binary path)
-    endif
-  endif
-
-  MIPSISET := -mips2
-else ifeq ($(COMPILER),gcc)
-  NON_MATCHING := 1
-  MIPSISET     := -mips3
-  OPT_FLAGS    := -O2
-endif
-
-
-# NON_MATCHING - whether to build a matching, identical copy of the ROM
-#   1 - enable some alternate, more portable code that does not produce a matching ROM
-#   0 - build a matching ROM
-NON_MATCHING ?= 0
-$(eval $(call validate-option,NON_MATCHING,0 1))
-
-ifeq ($(TARGET_N64),0)
-  NON_MATCHING := 1
-endif
-
-ifeq ($(NON_MATCHING),1)
-  DEFINES += NON_MATCHING=1 AVOID_UB=1
-  COMPARE := 0
-endif
-
-
-# COMPARE - whether to verify the SHA-1 hash of the ROM after building
-#   1 - verifies the SHA-1 hash of the selected version of the game
-#   0 - does not verify the hash
-COMPARE ?= 1
-$(eval $(call validate-option,COMPARE,0 1))
-
-TARGET_STRING := sm64.$(VERSION).$(GRUCODE)
-# If non-default settings were chosen, disable COMPARE
-ifeq ($(filter $(TARGET_STRING), sm64.jp.f3d_old sm64.us.f3d_old sm64.eu.f3d_new sm64.sh.f3d_new sm64.cn.f3d_new),)
-  COMPARE := 0
-endif
+MIPSISET     := -mips3
+OPT_FLAGS    := -O2
 
 # CHECKSUM - whether to set a checksum for the ROM
 #   1 - sets the checksum values inside the ROM
@@ -169,11 +121,6 @@ ifeq ($(filter clean distclean,$(MAKECMDGOALS)),)
   $(info Version:        $(VERSION))
   $(info Microcode:      $(GRUCODE))
   $(info Target:         $(TARGET))
-  ifeq ($(COMPARE),1)
-    $(info Compare ROM:    yes)
-  else
-    $(info Compare ROM:    no)
-  endif
   ifeq ($(NON_MATCHING),1)
     $(info Build Matching: no)
   else
@@ -213,12 +160,12 @@ ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
 
   # Make tools if out of date
   $(info Building general tools...)
-  DUMMY != $(MAKE) -s -C $(TOOLS_DIR) $(if $(filter-out ido0,$(COMPILER)$(USE_QEMU_IRIX)),all-except-recomp,) >&2 || echo FAIL
+  DUMMY != $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL
     ifeq ($(DUMMY),FAIL)
       $(error Failed to build tools)
     endif
   $(info Building sm64tools...)
-  DUMMY != $(MAKE) -s -C $(TOOLS_DIR)/sm64tools $(if $(filter-out ido0,$(COMPILER)$(USE_QEMU_IRIX)),) >&2 || echo FAIL
+  DUMMY != $(MAKE) -s -C $(TOOLS_DIR)/sm64tools >&2 || echo FAIL
     ifeq ($(DUMMY),FAIL)
       $(error Failed to build tools)
     endif
@@ -248,13 +195,7 @@ LEVEL_DIRS     := $(patsubst levels/%,%,$(dir $(wildcard levels/*/header.h)))
 SRC_DIRS := src src/engine src/game src/menu src/buffers src/audio $(AUDIO_SRC_DIR) actors levels bin data assets asm lib sound
 BIN_DIRS := bin bin/$(VERSION)
 
-ifeq ($(VERSION),cn)
-  LIBGCC_SRC_DIRS += lib/gcc
-endif
-
-ifeq ($(COMPILER),gcc)
-  LIBGCC_SRC_DIRS += lib/gcc
-endif
+LIBGCC_SRC_DIRS += lib/gcc
 GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
 
 # File dependencies and variables for specific files
@@ -331,26 +272,8 @@ else
 endif
 
 AS            := $(CROSS)as
-ifeq ($(COMPILER),gcc)
-  CC          := $(CROSS)gcc
-else
-  ifeq ($(USE_QEMU_IRIX),1)
-    IRIX_ROOT := $(TOOLS_DIR)/ido5.3_compiler
-    CC        := $(QEMU_IRIX) -silent -L $(IRIX_ROOT) $(IRIX_ROOT)/usr/bin/cc
-    ACPP      := $(QEMU_IRIX) -silent -L $(IRIX_ROOT) $(IRIX_ROOT)/usr/lib/acpp
-    COPT      := $(QEMU_IRIX) -silent -L $(IRIX_ROOT) $(IRIX_ROOT)/usr/lib/copt
-  else
-    IDO_ROOT  := $(TOOLS_DIR)/ido-static-recomp/build/out
-    CC        := $(IDO_ROOT)/cc
-    ACPP      := $(IDO_ROOT)/acpp
-    COPT      := $(IDO_ROOT)/copt
-  endif
-endif
-ifeq ($(COMPILER),gcc)
-  LD          := $(CROSS)ld
-else
-  LD          := LD_LIBRARY_PATH=$(LD_PATH) $(LD_PATH)/mips64-elf-ld
-endif
+CC            := $(CROSS)gcc
+LD            := $(CROSS)ld
 AR            := $(CROSS)ar
 OBJDUMP       := $(CROSS)objdump
 OBJCOPY       := $(CROSS)objcopy
@@ -409,7 +332,7 @@ endif
 
 # Check code syntax with host compiler
 CC_CHECK := gcc
-CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS)
+CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS) -m32
 
 # C compiler options
 CFLAGS = -G 0 $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
@@ -423,14 +346,6 @@ ASFLAGS     := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(fore
 ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
 
 RSPASMFLAGS := $(foreach d,$(DEFINES),-definelabel $(subst =, ,$(d)))
-
-ifeq ($(shell getconf LONG_BIT), 32)
-  # Work around memory allocation bug in QEMU
-  export QEMU_GUEST_BASE := 1
-else
-  # Ensure that gcc treats the code as 32-bit
-  CC_CHECK_CFLAGS += -m32
-endif
 
 # Prevent a crash with -sopt
 export LANG := C
@@ -473,12 +388,7 @@ BLINK   := \033[33;5m
 endif
 
 # Use objcopy instead of extract_data_for_mio to get 16-byte aligned padding
-ifeq ($(COMPILER),gcc)
-  EXTRACT_DATA_FOR_MIO := $(OBJCOPY) -O binary --only-section=.data
-endif
-ifeq ($(VERSION),cn)
-  EXTRACT_DATA_FOR_MIO := $(OBJCOPY) -O binary --only-section=.data
-endif
+EXTRACT_DATA_FOR_MIO := $(OBJCOPY) -O binary --only-section=.data
 
 # Common build print status function
 define print
@@ -490,10 +400,6 @@ endef
 #==============================================================================#
 
 all: $(ROM)
-ifeq ($(COMPARE),1)
-	@$(PRINT) "$(GREEN)Checking if ROM matches.. $(NO_COL)\n"
-	@$(SHA1SUM) --quiet -c $(TARGET).sha1 && $(PRINT) "$(TARGET): $(GREEN)OK$(NO_COL)\n" || ($(PRINT) "$(YELLOW)Building the ROM file has succeeded, but does not match the original ROM.\nThis is expected, and not an error, if you are making modifications.\nTo silence this message, use 'make COMPARE=0.' $(NO_COL)\n" && false)
-endif
 
 clean:
 	$(RM) -r $(BUILD_DIR_BASE)
