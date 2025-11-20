@@ -95,17 +95,6 @@ DEFINES += NON_MATCHING=1 AVOID_UB=1
 MIPSISET     := -mips3
 OPT_FLAGS    := -O2
 
-# CHECKSUM - whether to set a checksum for the ROM
-#   1 - sets the checksum values inside the ROM
-#   0 - does not sets a checksum, leaving all values with zero
-CHECKSUM ?= 1
-
-ifeq ($(NON_MATCHING),0)
-  ifeq ($(VERSION),cn)
-    CHECKSUM := 0
-  endif
-endif
-
 # Whether to hide commands or not
 VERBOSE ?= 0
 ifeq ($(VERBOSE),0)
@@ -121,11 +110,6 @@ ifeq ($(filter clean distclean,$(MAKECMDGOALS)),)
   $(info Version:        $(VERSION))
   $(info Microcode:      $(GRUCODE))
   $(info Target:         $(TARGET))
-  ifeq ($(NON_MATCHING),1)
-    $(info Build Matching: no)
-  else
-    $(info Build Matching: yes)
-  endif
   $(info =======================)
 endif
 
@@ -330,17 +314,9 @@ else
   CPPFLAGS := -P -Wno-trigraphs $(DEF_INC_CFLAGS)
 endif
 
-# Check code syntax with host compiler
-CC_CHECK := gcc
-CC_CHECK_CFLAGS := -fsyntax-only -fsigned-char $(CC_CFLAGS) $(TARGET_CFLAGS) -std=gnu90 -Wall -Wextra -Wno-format-security -Wno-main -DNON_MATCHING -DAVOID_UB $(DEF_INC_CFLAGS) -m32
-
 # C compiler options
 CFLAGS = -G 0 $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
-ifeq ($(COMPILER),gcc)
-  CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra
-else
-  CFLAGS += -non_shared -Wab,-r4300_mul -Xcpluscomm -Xfullwarn -signed -32
-endif
+CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra -Wno-trigraphs -Wno-missing-braces
 
 ASFLAGS     := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
 ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
@@ -638,61 +614,14 @@ $(GLOBAL_ASM_DEP).$(NON_MATCHING):
 # Compilation Recipes                                                          #
 #==============================================================================#
 
-# Alternate compiler flags needed for matching
-ifeq ($(NON_MATCHING),0)
-  $(BUILD_DIR)/levels/%/leveldata.o: OPT_FLAGS := -g
-  $(BUILD_DIR)/actors/%.o:           OPT_FLAGS := -g
-  $(BUILD_DIR)/bin/%.o:              OPT_FLAGS := -g
-  $(BUILD_DIR)/src/goddard/%.o:      OPT_FLAGS := -g
-  $(BUILD_DIR)/src/goddard/%.o:      MIPSISET := -mips1
-  ifeq ($(VERSION),cn)
-    $(BUILD_DIR)/lib/gcc/%.o:        OPT_FLAGS := -O2 -g -mips2
-  endif
-
-  # Audio specific flags:
-
-  # For EU, all audio files other than external.c and port.c put string literals
-  # in .data. (In Shindou, the port.c string literals also moved to .data.)
-  $(BUILD_DIR)/src/audio/eu/%.o:          OPT_FLAGS := -O2 -use_readwrite_const
-  $(BUILD_DIR)/src/audio/eu/port.o:       OPT_FLAGS := -O2
-
-  # US/JP disable loop unrolling and enable -framepointer for one file.
-  $(BUILD_DIR)/src/audio/us_jp/%.o:         OPT_FLAGS := -O2 -Wo,-loopunroll,0
-  $(BUILD_DIR)/src/audio/us_jp/load.o:      OPT_FLAGS := -O2 -Wo,-loopunroll,0 -framepointer
-
-  # The source-to-source optimizer copt is enabled for US/JP audio. This makes it use
-  # acpp, which needs -Wp,-+ to handle C++-style comments.
-  # All other files than external.c should really use copt, but only a few have
-  # been matched so far.
-  $(BUILD_DIR)/src/audio/us_jp/effects.o:   OPT_FLAGS := -O2 -Wo,-loopunroll,0 -sopt,-inline=sequence_channel_process_sound,-scalaroptimize=1 -Wp,-+
-  $(BUILD_DIR)/src/audio/us_jp/synthesis.o: OPT_FLAGS := -O2 -Wo,-loopunroll,0 -sopt,-scalaroptimize=1 -Wp,-+
-
-  $(BUILD_DIR)/src/audio/external.o:        OPT_FLAGS := -O2 -Wo,-loopunroll,0
-
-# Add a target for build/eu/src/audio/*.copt to make it easier to see debug
-$(BUILD_DIR)/src/audio/%.acpp: src/audio/%.c
-	$(ACPP) $(TARGET_CFLAGS) $(DEF_INC_CFLAGS) -D__sgi -+ $< > $@
-$(BUILD_DIR)/src/audio/%.copt: $(BUILD_DIR)/src/audio/%.acpp
-	$(COPT) -signed -I=$< -CMP=$@ -cp=i -scalaroptimize=1 $(COPTFLAGS)
-$(BUILD_DIR)/src/audio/%/seqplayer.copt: COPTFLAGS := -inline_manual
-
-endif
-
 # Compile C code
 $(BUILD_DIR)/%.o: %.c
 	$(call print,Compiling:,$<,$@)
-	$(V)$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
 	$(V)$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-ifeq ($(VERSION),cn)
-	$(V)$(TOOLS_DIR)/patch_elf_32bit $@
-endif
+
 $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
 	$(call print,Compiling:,$<,$@)
-	$(V)$(CC_CHECK) $(CC_CHECK_CFLAGS) -MMD -MP -MT $@ -MF $(BUILD_DIR)/$*.d $<
 	$(V)$(CC) -c $(CFLAGS) $(OPT_FLAGS) $(MIPSISET) -o $@ $<
-ifeq ($(VERSION),cn)
-	$(V)$(TOOLS_DIR)/patch_elf_32bit $@
-endif
 
 # Assemble assembly code
 $(BUILD_DIR)/%.o: %.s
@@ -729,20 +658,10 @@ $(ELF): $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) $(LI
 	$(V)$(LD) -L $(BUILD_DIR) -T $(BUILD_DIR)/$(LD_SCRIPT) -Map $(BUILD_DIR)/sm64.$(VERSION).map --no-check-sections $(addprefix -R ,$(SEG_FILES)) -o $@ $(O_FILES) -lultra -lgoddard -lgcc
 
 # Build ROM
-ifeq ($(VERSION),cn)
-  PAD_TO_GAP_FILL := --pad-to=0x7B0000 --gap-fill=0x00
-else
-  PAD_TO_GAP_FILL := --pad-to=0x800000 --gap-fill=0xFF
-endif
-
 $(ROM): $(ELF)
 	$(call print,Building ROM:,$<,$@)
-ifeq ($(CHECKSUM),1)
-	$(V)$(OBJCOPY) $(PAD_TO_GAP_FILL) $< $(@:.z64=.bin) -O binary
+	$(V)$(OBJCOPY) --pad-to=0x800000 --gap-fill=0xFF $< $(@:.z64=.bin) -O binary
 	$(V)$(N64CKSUM) $(@:.z64=.bin) $@
-else
-	$(V)$(OBJCOPY) $(PAD_TO_GAP_FILL) $< $(@) -O binary
-endif
 
 $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@
