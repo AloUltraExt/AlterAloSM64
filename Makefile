@@ -23,6 +23,8 @@ TARGET_N64 ?= 1
 COMPILER ?= gcc
 $(eval $(call validate-option,COMPILER, gcc))
 
+# Various workarounds for weird and/or old toolchains
+CPP_ASSEMBLY ?= 0
 
 # VERSION - selects the version of the game to build
 #   jp - builds the 1996 Japanese version
@@ -35,9 +37,7 @@ $(eval $(call validate-option,VERSION,jp us eu sh cn))
 
 ifeq      ($(VERSION),jp)
   DEFINES   += VERSION_JP=1
-  OPT_FLAGS := -g
   GRUCODE   ?= f3d_old
-  LIBULTRA ?= D
   AUDIO_SRC_DIR  ?= src/audio/us_jp
 else ifeq ($(VERSION),us)
   DEFINES   += VERSION_US=1
@@ -47,21 +47,15 @@ else ifeq ($(VERSION),us)
   AUDIO_SRC_DIR  ?= src/audio/us_jp
 else ifeq ($(VERSION),eu)
   DEFINES   += VERSION_EU=1
-  OPT_FLAGS := -O2
   GRUCODE   ?= f3d_new
-  LIBULTRA ?= F
   AUDIO_SRC_DIR  ?= src/audio/eu
 else ifeq ($(VERSION),sh)
   DEFINES   += VERSION_SH=1
-  OPT_FLAGS := -O2
   GRUCODE   ?= f3d_new
-  LIBULTRA ?= H
   AUDIO_SRC_DIR  ?= src/audio/sh
 else ifeq ($(VERSION),cn)
   DEFINES   += VERSION_CN=1
-  OPT_FLAGS := -O2
   GRUCODE   ?= f3d_new
-  LIBULTRA ?= BB
   AUDIO_SRC_DIR  ?= src/audio/sh
 endif
 
@@ -94,6 +88,11 @@ DEFINES += NON_MATCHING=1 AVOID_UB=1
 
 MIPSISET     := -mips3
 OPT_FLAGS    := -O2
+ifeq ($(VERSION),cn)
+  LIBULTRA ?= BB
+else
+  LIBULTRA ?= L
+endif
 
 # Whether to hide commands or not
 VERBOSE ?= 0
@@ -223,20 +222,9 @@ LIBGCC_O_FILES := $(foreach file,$(LIBGCC_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
 # Automatic dependency files
 DEP_FILES := $(O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(LIBGCC_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
 
-# Files with GLOBAL_ASM blocks
-ifeq ($(NON_MATCHING),0)
-  GLOBAL_ASM_C_FILES != grep -rl 'GLOBAL_ASM(' $(wildcard src/**/*.c)
-  GLOBAL_ASM_O_FILES = $(foreach file,$(GLOBAL_ASM_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
-  GLOBAL_ASM_DEP = $(BUILD_DIR)/src/audio/non_matching_dep
-endif
-
-
 #==============================================================================#
 # Compiler Options                                                             #
 #==============================================================================#
-
-EGCS_PATH := $(TOOLS_DIR)/egcs
-LD_PATH := $(TOOLS_DIR)/ld
 
 # detect prefix for MIPS toolchain
 ifneq ($(call find-command,mips64-elf-ld),)
@@ -275,35 +263,7 @@ endif
 C_DEFINES := $(foreach d,$(DEFINES),-D$(d))
 DEF_INC_CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(C_DEFINES)
 
-EGCS_AS := $(EGCS_PATH)/as
-EGCS_ASFLAGS = -mcpu=r4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i))
-
 include libultra.mk
-
-ifeq ($(NON_MATCHING),0)
-
-ifeq ($(VERSION),cn)
-  EGCS_REASSEMBLED_ASM_FILES := $(wildcard asm/*.s)
-  EGCS_REASSEMBLED_ASM_FILES := $(filter-out asm/ipl3_font.s, $(EGCS_REASSEMBLED_ASM_FILES))
-  EGCS_REASSEMBLED := $(foreach file,$(EGCS_REASSEMBLED_ASM_FILES),$(BUILD_DIR)/$(file:.s=.o))
-  $(EGCS_REASSEMBLED): AS := $(EGCS_AS)
-  $(EGCS_REASSEMBLED): ASFLAGS = $(EGCS_ASFLAGS)
-endif
-
-EGCS_CC := COMPILER_PATH=$(EGCS_PATH) $(EGCS_PATH)/gcc
-EGCS_CFLAGS = -G 0 $(TARGET_CFLAGS) -mcpu=r4300 -fno-pic -Wa,--strip-local-absolute $(DEF_INC_CFLAGS)
-
-# iQue recompiled some files with a different compiler
-ifeq ($(VERSION),cn)
-  IQUE_RECOMPILED_SRC_GAME := $(addprefix $(BUILD_DIR)/src/game/,rumble_init.o level_update.o memory.o area.o print.o ingame_menu.o hud.o cn_common_syms_1.o cn_common_syms_2.o) $(addprefix $(BUILD_DIR)/src/menu/,title_screen.o intro_geo.o file_select.o star_select.o)
-  IQUE_RECOMPILED_LIBGCC_SRC  := $(LIBGCC_O_FILES)
-  IQUE_RECOMPILED = $(IQUE_RECOMPILED_SRC_GAME) $(IQUE_RECOMPILED_LIBGCC_SRC)
-  $(IQUE_RECOMPILED): CC := $(EGCS_CC)
-  $(IQUE_RECOMPILED): CFLAGS = $(EGCS_CFLAGS)
-  $(IQUE_RECOMPILED): MIPSISET :=
-endif
-
-endif
 
 # Prefer clang as C preprocessor if installed on the system
 ifneq (,$(call find-command,clang))
@@ -318,8 +278,11 @@ endif
 CFLAGS = -G 0 $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
 CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra -Wno-trigraphs -Wno-missing-braces
 
-ASFLAGS     := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
-ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
+ifeq ($(CPP_ASSEMBLY),1)
+  ASFLAGS  := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
+else
+  ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
+endif
 
 RSPASMFLAGS := $(foreach d,$(DEFINES),-definelabel $(subst =, ,$(d)))
 
@@ -336,9 +299,8 @@ N64CKSUM              := $(TOOLS_DIR)/sm64tools/n64cksum
 N64GRAPHICS           := $(TOOLS_DIR)/sm64tools/n64graphics
 N64GRAPHICS_CI        := $(TOOLS_DIR)/sm64tools/n64graphics_ci
 TEXTCONV              := $(TOOLS_DIR)/textconv
-AIFF_EXTRACT_CODEBOOK := $(TOOLS_DIR)/aiff_extract_codebook
+TABLEDESIGN           := $(TOOLS_DIR)/tabledesign
 VADPCM_ENC            := $(TOOLS_DIR)/vadpcm_enc
-EXTRACT_DATA_FOR_MIO  := $(TOOLS_DIR)/extract_data_for_mio
 SKYCONV               := $(TOOLS_DIR)/skyconv
 # Use the system installed armips if available. Otherwise use the one provided with this repository.
 ifneq (,$(call find-command,armips))
@@ -362,9 +324,6 @@ BLUE    := \033[0;34m
 YELLOW  := \033[0;33m
 BLINK   := \033[33;5m
 endif
-
-# Use objcopy instead of extract_data_for_mio to get 16-byte aligned padding
-EXTRACT_DATA_FOR_MIO := $(OBJCOPY) -O binary --only-section=.data
 
 # Common build print status function
 define print
@@ -485,11 +444,11 @@ $(LEVEL_ELF_FILES): $(BUILD_DIR)/levels/%/leveldata.elf: $(BUILD_DIR)/levels/%/l
 
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf
 	$(call print,Extracting compressible data from:,$<,$@)
-	$(V)$(EXTRACT_DATA_FOR_MIO) $< $@
+	$(V)$(OBJCOPY) -O binary --only-section=.data $< $@
 
 $(BUILD_DIR)/levels/%/leveldata.bin: $(BUILD_DIR)/levels/%/leveldata.elf
 	$(call print,Extracting compressible data from:,$<,$@)
-	$(V)$(EXTRACT_DATA_FOR_MIO) $< $@
+	$(V)$(OBJCOPY) -O binary --only-section=.data $< $@
 
 # Compress binary file
 $(BUILD_DIR)/%.mio0: $(BUILD_DIR)/%.bin
@@ -507,8 +466,8 @@ $(BUILD_DIR)/%.mio0.o: $(BUILD_DIR)/%.mio0
 #==============================================================================#
 
 $(BUILD_DIR)/%.table: %.aiff
-	$(call print,Extracting codebook:,$<,$@)
-	$(V)$(AIFF_EXTRACT_CODEBOOK) $< >$@
+	$(call print,Generating ADPCM table:,$<,$@)
+	$(V)$(TABLEDESIGN) -s 1 $< >$@
 
 $(BUILD_DIR)/%.aifc: $(BUILD_DIR)/%.table %.aiff
 	$(call print,Encoding ADPCM:,$(word 2,$^),$@)
@@ -598,18 +557,6 @@ $(BUILD_DIR)/include/level_headers.h: levels/level_headers.h.in
 	$(call print,Preprocessing level headers:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -I . $< | sed -E 's|(.+)|#include "\1"|' > $@
 
-# Run asm_processor on files that have NON_MATCHING code
-ifeq ($(NON_MATCHING),0)
-$(GLOBAL_ASM_O_FILES): CC := $(V)$(PYTHON) $(TOOLS_DIR)/asm_processor/build.py $(CC) -- $(AS) $(ASFLAGS) --
-endif
-
-# Rebuild files with 'GLOBAL_ASM' if the NON_MATCHING flag changes.
-$(GLOBAL_ASM_O_FILES): $(GLOBAL_ASM_DEP).$(NON_MATCHING)
-$(GLOBAL_ASM_DEP).$(NON_MATCHING):
-	@$(RM) $(GLOBAL_ASM_DEP).*
-	$(V)touch $@
-
-
 #==============================================================================#
 # Compilation Recipes                                                          #
 #==============================================================================#
@@ -626,10 +573,10 @@ $(BUILD_DIR)/%.o: $(BUILD_DIR)/%.c
 # Assemble assembly code
 $(BUILD_DIR)/%.o: %.s
 	$(call print,Assembling:,$<,$@)
-ifeq ($(COMPILER),gcc)
-	$(V)$(CC) -c $(ASMFLAGS) -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d -o $@ $<
+ifeq ($(CPP_ASSEMBLY),1)
+	$(V)$(CPP) $(CPPFLAGS) -D_LANGUAGE_ASSEMBLY $< | $(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@
 else
-	$(V)$(CPP) $(CPPFLAGS) -D_LANGUAGE_ASSEMBLY  $< | $(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@
+	$(V)$(CC) -c $(ASMFLAGS) -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d -o $@ $<
 endif
 
 # Assemble RSP assembly code
