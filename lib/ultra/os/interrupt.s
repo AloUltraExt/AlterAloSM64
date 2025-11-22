@@ -3,10 +3,6 @@
 #include "sys/asm.h"
 #include "sys/regdef.h"
 
-#ifdef BBPLAYER
-.set mips2
-#endif
-
 .text
 .set noreorder
 LEAF(__osDisableInt)

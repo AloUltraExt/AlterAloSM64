@@ -1,7 +1,7 @@
 #include "PR/os_internal.h"
 #include "macros.h"
 
-FORCE_BSS OSMesg osPiMesgBuff[1];
+ALIGNED8 OSMesg osPiMesgBuff[1];
 ALIGNED8 OSMesgQueue __osPiAccessQueue;
 u32 __osPiAccessQueueEnabled = FALSE;
 

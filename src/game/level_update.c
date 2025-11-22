@@ -158,18 +158,18 @@ struct CreditsEntry sCreditsSequence[] = {
 struct MarioState gMarioStates[1];
 struct HudDisplay gHudDisplay;
 
-FORCE_BSS s16 sCurrPlayMode;
-FORCE_BSS u16 D_80339ECA;
-FORCE_BSS s16 sTransitionTimer;
-FORCE_BSS void (*sTransitionUpdate)(s16 *);
-FORCE_BSS struct WarpDest sWarpDest;
-FORCE_BSS s16 D_80339EE0;
-FORCE_BSS s16 sDelayedWarpOp;
-FORCE_BSS s16 sDelayedWarpTimer;
-FORCE_BSS s16 sSourceWarpNodeId;
-FORCE_BSS s32 sDelayedWarpArg;
-FORCE_BSS s16 sUnusedLevelUpdateBss;
-FORCE_BSS s8 sTimerRunning;
+s16 sCurrPlayMode;
+u16 D_80339ECA;
+s16 sTransitionTimer;
+void (*sTransitionUpdate)(s16 *);
+struct WarpDest sWarpDest;
+s16 D_80339EE0;
+s16 sDelayedWarpOp;
+s16 sDelayedWarpTimer;
+s16 sSourceWarpNodeId;
+s32 sDelayedWarpArg;
+s16 sUnusedLevelUpdateBss;
+s8 sTimerRunning;
 s8 gNeverEnteredCastle;
 
 struct MarioState *gMarioState = &gMarioStates[0];

@@ -9,7 +9,7 @@
         ptr = (void *) osVirtualToPhysical(ptr);                                                       \
     }
 
-FORCE_BSS static OSTask tmpTask;
+static OSTask tmpTask;
 
 static OSTask *_VirtualToPhysicalTask(OSTask *intp) {
     OSTask *tp;

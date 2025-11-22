@@ -2,10 +2,6 @@
 #include "sys/asm.h"
 #include "sys/regdef.h"
 
-#ifdef BBPLAYER
-.set mips2
-#endif
-
 .text
 LEAF(bcopy)
     move a3, a1

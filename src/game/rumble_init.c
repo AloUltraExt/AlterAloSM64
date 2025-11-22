@@ -10,17 +10,17 @@
 #include "main.h"
 #include "rumble_init.h"
 
-FORCE_BSS OSThread gRumblePakThread;
+OSThread gRumblePakThread;
 
-FORCE_BSS OSPfs gRumblePakPfs;
+OSPfs gRumblePakPfs;
 
-FORCE_BSS OSMesg gRumblePakSchedulerMesgBuf;
-FORCE_BSS OSMesgQueue gRumblePakSchedulerMesgQueue;
-FORCE_BSS OSMesg gRumbleThreadVIMesgBuf;
-FORCE_BSS OSMesgQueue gRumbleThreadVIMesgQueue;
+OSMesg gRumblePakSchedulerMesgBuf;
+OSMesgQueue gRumblePakSchedulerMesgQueue;
+OSMesg gRumbleThreadVIMesgBuf;
+OSMesgQueue gRumbleThreadVIMesgQueue;
 
-FORCE_BSS struct RumbleData gRumbleDataQueue[3];
-FORCE_BSS struct StructSH8031D9B0 gCurrRumbleSettings;
+struct RumbleData gRumbleDataQueue[3];
+struct StructSH8031D9B0 gCurrRumbleSettings;
 
 s32 sRumblePakThreadActive = FALSE;
 s32 sRumblePakActive = FALSE;

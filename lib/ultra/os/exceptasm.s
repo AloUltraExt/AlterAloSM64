@@ -19,11 +19,8 @@
 #define KMC_WPORT       0xBFF08000
 #define KMC_STAT        0xBFF08004
 
-#ifdef BBPLAYER
-#define XOR_VALUE 0xFFFFFFFF
-#else
+/* 0xFFFFFFFF crashes PJ64 */
 #define XOR_VALUE ~0
-#endif
 
 #if LIBULTRA_VERSION >= OS_VER_J
 #define INT_TABLE(arg1, arg2) .word arg1, arg2

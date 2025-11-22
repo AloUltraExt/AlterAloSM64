@@ -92,12 +92,6 @@
 #define CN_DEBUG_PRINTF(args)
 #endif
 
-#ifdef VERSION_CN
-#define FORCE_BSS __attribute__((nocommon)) __attribute__((section (".bss_cn")))
-#else
-#define FORCE_BSS
-#endif
-
 #endif
 
 #endif // MACROS_H

@@ -19,9 +19,12 @@
 .equ INITIAL_DMA_LEN, (0x00100000 - 1)
 .equ INITIAL_DMA_ROMPOS, 0x1000
 
-#if defined(VERSION_CN) && !defined(AVOID_UB)
-#define BB_BOOT
-#endif
+// BBPLAYER variables
+.equ SP_DMEM_CN_UNK0, 0x0400049C
+.equ SP_DMEM_CN_UNK1, 0x0400074C
+
+// Just use regular boot code
+//#define BB_BOOT
 
 #ifdef BB_BOOT
 .macro cn_li a b
@@ -68,7 +71,7 @@ glabel ipl3_entry // 0xA4000040
     nop
     addi  $s1, $s1, -1
     bnez  $s1, .LA400009C
-     nop
+    nop
     sw    $zero, %lo(RI_CURRENT_LOAD_REG)($t0)
     ori   $t1, $zero, 0x14
     sw    $t1, %lo(RI_SELECT_REG)($t0)
@@ -78,7 +81,7 @@ glabel ipl3_entry // 0xA4000040
     nop
     addi  $s1, $s1, -1
     bnez  $s1, .LA40000C0
-     nop
+    nop
     ori   $t1, $zero, 14
     sw    $t1, %lo(RI_MODE_REG)($t0)
     li    $s1, 32
@@ -110,11 +113,11 @@ glabel ipl3_entry // 0xA4000040
     lw    $s0, %lo(PHYS_TO_K1(MI_VERSION_REG))($s0)
     cn_li $s1, 0x01010101
     bne   $s0, $s1, .LA4000160
-     nop
+    nop
     li    $s0, 512
     ori   $s1, $t3, 0x4000
     b     .LA4000168
-     nop
+    nop
 .LA4000160:
     li    $s0, 1024
     ori   $s1, $t3, 0x8000
@@ -122,9 +125,9 @@ glabel ipl3_entry // 0xA4000040
     sw    $t6, 4($s1)
     addiu $s5, $t7, 0xc
     jal   func_A4000778
-     nop
+    nop
     beqz  $v0, .LA400025C
-     nop
+    nop
     sw    $v0, ($sp)
     li    $t1, 8192
     sw    $t1, %lo(MI_MODE_REG)($t4)
@@ -137,7 +140,7 @@ glabel ipl3_entry // 0xA4000040
     sw    $t1, %lo(MI_MODE_REG)($t4)
     lui   $t0, 0xb019
     bne   $t3, $t0, .LA40001E0
-     nop
+    nop
     lui   $t0, 0x800
     add   $t8, $t8, $t0
     add   $t9, $t9, $s0
@@ -148,7 +151,7 @@ glabel ipl3_entry // 0xA4000040
     sll   $s2, $s2, 1
     addi  $s2, $s2, 1
     b     .LA40001E8
-     nop
+    nop
 .LA40001E0:
     lui   $t0, 0x10
     add   $s4, $s4, $t0
@@ -162,17 +165,17 @@ glabel ipl3_entry // 0xA4000040
     andi  $t1, $t1, 0xffff
     li    $t0, 1280
     bne   $t1, $t0, .LA4000230
-     nop
+    nop
     lui   $k1, 0x100
     and   $k0, $k0, $k1
     bnez  $k0, .LA4000230
-     nop
+    nop
     lui   $t0, (0x101C0A04 >> 16)
     ori   $t0, (0x101C0A04 & 0xFFFF)
     sw    $t0, 0x18($t7)
     b     .LA400023C
 .LA4000230:
-     lui   $t0, (0x080C1204 >> 16)
+    lui   $t0, (0x080C1204 >> 16)
     ori   $t0, (0x080C1204 & 0xFFFF)
     sw    $t0, 0x18($t7)
 .LA400023C:
@@ -183,7 +186,7 @@ glabel ipl3_entry // 0xA4000040
     addiu $t5, $t5, 1
     sltiu $t0, $t5, 8
     bnez  $t0, .LA4000168
-     nop
+    nop
 .LA400025C:
 #ifdef BB_BOOT
     li    $t0, 0xc0000000
@@ -199,14 +202,14 @@ glabel ipl3_entry // 0xA4000040
     lw    $t1, 4($sp)
     lui   $t0, 0xb009
     bne   $t1, $t0, .LA40002D8
-     nop
+    nop
     sw    $t8, 4($s1)
     addiu $s5, $t9, 0xc
     lw    $a0, ($sp)
     addi  $sp, $sp, 8
     li    $a1, 1
     jal   func_A4000A40
-     nop
+    nop
     lw    $t0, ($s6)
     lui   $t0, 8
     add   $t0, $t0, $s6
@@ -222,13 +225,13 @@ glabel ipl3_entry // 0xA4000040
     add   $s6, $s6, $t0
     b     .LA400035C
 .LA40002D8:
-     sw    $s7, 4($s1)
+    sw    $s7, 4($s1)
     addiu $s5, $a2, 0xc
     lw    $a0, ($sp)
     addi  $sp, $sp, 8
     li    $a1, 1
     jal   func_A4000A40
-     nop
+    nop
     lw    $t0, ($a3)
     lui   $t0, 8
     add   $t0, $t0, $a3
@@ -259,7 +262,7 @@ glabel ipl3_entry // 0xA4000040
     addiu $v1, $v1, 1
     slt   $t0, $v1, $t5
     bnez  $t0, .LA4000274
-     nop
+    nop
     lui   $t2, %hi(PHYS_TO_K1(RI_BASE_REG))
     sll   $s2, $s2, 0x13
     lui   $t1, (0x00063634 >> 16)
@@ -290,7 +293,7 @@ glabel ipl3_entry // 0xA4000040
     cache 8, ($t0)
     sltu  $at, $t0, $t1
     bnez  $at, .LA40003D8
-     addiu $t0, $t0, 0x20
+    addiu $t0, $t0, 0x20
     cn_li $t0, UT_VEC
     addiu $t1, $t0, 0x2000
     addiu $t1, $t1, -0x10
@@ -298,11 +301,11 @@ glabel ipl3_entry // 0xA4000040
     cache 9, ($t0)
     sltu  $at, $t0, $t1
     bnez  $at, .LA40003F8
-     addiu $t0, $t0, 0x10
+    addiu $t0, $t0, 0x10
     b     .LA4000458
-     nop
+    nop
 .LA4000410:
-    cn_li  $t0, UT_VEC
+    cn_li $t0, UT_VEC
     addiu $t1, $t0, 0x4000
     addiu $t1, $t1, -0x20
     mtc0  $zero, $28
@@ -311,7 +314,7 @@ glabel ipl3_entry // 0xA4000040
     cache 8, ($t0)
     sltu  $at, $t0, $t1
     bnez  $at, .LA4000428
-     addiu $t0, $t0, 0x20
+    addiu $t0, $t0, 0x20
     cn_li $t0, UT_VEC
     addiu $t1, $t0, 0x2000
     addiu $t1, $t1, -0x10
@@ -319,7 +322,7 @@ glabel ipl3_entry // 0xA4000040
     cache 1, ($t0)
     sltu  $at, $t0, $t1
     bnez  $at, .LA4000448
-     addiu $t0, $t0, 0x10
+    addiu $t0, $t0, 0x10
 .LA4000458:
 #ifdef BB_BOOT
     la    $t0, SP_DMEM_CN_UNK0
@@ -341,10 +344,10 @@ glabel ipl3_entry // 0xA4000040
     addiu $t1, $t1, 4
     sltu  $at, $t0, $t3
     bnez  $at, .LA4000474
-     nop
+    nop
     lui   $t4, 0x8000
     jr    $t4
-     nop
+    nop
     lui   $t3, 0xb000
     lui   $t2, 0x1fff
     ori   $t2, $t2, 0xffff
@@ -357,7 +360,7 @@ glabel ipl3_entry // 0xA4000040
     lw    $t0, 0x10($t0)
     andi  $t0, $t0, 2
     bnez  $t0, .LA40004B8
-     nop
+    nop
 #else
     cn_li $t2, PHYS_TO_K1(SP_DMEM_START)
     lui   $t3, 0xfff0
@@ -380,10 +383,10 @@ glabel ipl3_entry // 0xA4000040
     sltu  $at, $t0, $t3
     addiu $t1, $t1, 4
     bnez  $at, .LA4000498
-     sw    $t5, -4($t1)
+    sw    $t5, -4($t1)
     cn_li $t4, UT_VEC
     jr    $t4
-     nop
+    nop
     lui   $t3, %hi(PHYS_TO_CART(CART_ENTRYPOINT))
     lw    $t1, %lo(PHYS_TO_CART(CART_ENTRYPOINT))($t3)
     lui   $t2, (0x1FFFFFFF >> 16)
@@ -440,7 +443,7 @@ glabel ipl3_entry // 0xA4000040
     lw    $t3, %lo(PHYS_TO_K1(PI_STATUS_REG))($t3)
     andi  $t3, $t3, 0x1
     bnez  $t3, .LA4000514
-     nop
+    nop
 #ifdef BB_BOOT
     nop
     nop
@@ -511,7 +514,7 @@ glabel ipl3_entry // 0xA4000040
     lui   $t1, %hi(PHYS_TO_K1(SP_PC_REG))
     lw    $t1, %lo(PHYS_TO_K1(SP_PC_REG))($t1)
     beqz  $t1, .LA4000698
-     nop
+    nop
     addiu $t2, $zero, 0x41
     lui   $at, %hi(PHYS_TO_K1(SP_STATUS_REG))
     sw    $t2, %lo(PHYS_TO_K1(SP_STATUS_REG))($at)
@@ -566,7 +569,7 @@ glabel ipl3_entry // 0xA4000040
     addu  $v1, $a3, $v0
     sltu  $at, $v1, $a3
     beqz  $at, .LA4000608
-     move  $a1, $v1
+    move  $a1, $v1
     addiu $t2, $t2, 1
 .LA4000608:
     andi  $v1, $v0, 0x1f
@@ -578,10 +581,10 @@ glabel ipl3_entry // 0xA4000040
     move  $a3, $a1
     xor   $t3, $t3, $v0
     beqz  $at, .LA400063C
-     addu  $s0, $s0, $a0
+    addu  $s0, $s0, $a0
     xor   $t9, $a3, $v0
     b     .LA4000640
-     xor   $a2, $t9, $a2
+    xor   $a2, $t9, $a2
 .LA400063C:
     xor   $a2, $a2, $a0
 .LA4000640:
@@ -589,7 +592,7 @@ glabel ipl3_entry // 0xA4000040
     xor   $t7, $v0, $s0
     addiu $t1, $t1, 4
     bne   $t0, $ra, .LA40005F0
-     addu  $t4, $t7, $t4
+    addu  $t4, $t7, $t4
     xor   $t6, $a3, $t2
     xor   $a3, $t6, $t3
     xor   $t8, $s0, $a2
@@ -600,13 +603,13 @@ glabel ipl3_entry // 0xA4000040
     nop
     lw    $t0, %lo(PHYS_TO_CART(CART_CHECKSUM1))($t3)
     bne   $s0, $t0, halt
-     nop
+    nop
     bal   func_A4000690
-     nop
+    nop
 
 halt:
     bal   halt
-     nop
+    nop
 
 func_A4000690:
     lui   $t1, %hi(PHYS_TO_K1(SP_PC_REG))
@@ -614,7 +617,7 @@ func_A4000690:
     lw    $s0, 0x14($sp)
     lw    $ra, 0x1c($sp)
     beqz  $t1, .LA40006BC
-     addiu $sp, $sp, 0x20
+    addiu $sp, $sp, 0x20
     li    $t2, 65
     lui   $at, %hi(PHYS_TO_K1(SP_STATUS_REG))
     sw    $t2, %lo(PHYS_TO_K1(SP_STATUS_REG))($at)
@@ -644,16 +647,16 @@ func_A4000690:
     sw    $s5, 0xc($t0)
 #ifdef BB_BOOT
     beqz  $s3, .LA4000728
-     sw    $s7, 0x14($t0)
+    sw    $s7, 0x14($t0)
     b     .LA4000730
-     lui   $t1, 0xa600
+    lui   $t1, 0xa600
 #else
     sw    $s3, 0x4($t0)
     beqz  $s3, .LA4000728
-     sw    $s4, ($t0)
+    sw    $s4, ($t0)
     lui   $t1, 0xa600
     b     .LA4000730
-     addiu $t1, $t1, 0
+    addiu $t1, $t1, 0
 #endif
 .LA4000728:
     cn_li $t1, 0xb0000000
@@ -666,12 +669,12 @@ func_A4000690:
     sw    $zero, ($t0)
     addiu $t0, $t0, 4
     bne   $t0, $t1, .LA4000710
-     nop
+    nop
 #else
 .LA4000740:
     addiu $t0, $t0, 4
     bne   $t0, $t1, .LA4000740
-     sw    $zero, -4($t0)
+    sw    $zero, -4($t0)
 #endif
     cn_li $t0, PHYS_TO_K1(SP_IMEM_START)
     addi  $t1, $t0, 0x1000
@@ -680,17 +683,17 @@ func_A4000690:
     sw    $zero, ($t0)
     addiu $t0, $t0, 4
     bne   $t0, $t1, .LA400072C
-     nop
+    nop
 #else
 .LA4000758:
     addiu $t0, $t0, 4
     bne   $t0, $t1, .LA4000758
-     sw    $zero, -4($t0)
+    sw    $zero, -4($t0)
 #endif
     lui   $t3, %hi(PHYS_TO_CART(CART_ENTRYPOINT))
     lw    $t1, %lo(PHYS_TO_CART(CART_ENTRYPOINT))($t3)
     jr    $t1
-     nop
+    nop
     nop
 
 func_A4000778:
@@ -735,7 +738,7 @@ func_A4000778:
 #endif
 .LA40007EC:
     jal   func_A4000880
-     nop
+    nop
     addiu $s0, $s0, 1
 #ifdef BB_BOOT
     addu  $s1, $s1, $v0
@@ -743,13 +746,13 @@ func_A4000778:
     slti  $t1, $s0, 4
     bnez  $t1, .LA40007EC
 #ifdef BB_BOOT
-     nop
+    nop
 #else
-     addu  $s1, $s1, $v0
+    addu  $s1, $s1, $v0
 #endif
     srl   $a0, $s1, 2
     jal   func_A4000A40
-     li    $a1, 1
+    li    $a1, 1
 #ifdef BB_BOOT
     srl   $v0, $s1, 2
 #else
@@ -787,7 +790,7 @@ func_A4000778:
     lw    $ra, 0x64($sp)
 #endif
     jr    $ra
-     addiu $sp, $sp, 0xa0
+    addiu $sp, $sp, 0xa0
 
 func_A4000880:
     addiu $sp, $sp, -0x20
@@ -799,19 +802,19 @@ func_A4000880:
     slti  $k0, $t4, 0x40
 #ifdef BB_BOOT
     beqz  $k0, .LA40008D4
-     nop
+    nop
 #else
     beql  $k0, $zero, .LA40008FC
-     move  $v0, $zero
+    move  $v0, $zero
 #endif
     jal   func_A400090C
-     move  $a0, $t4
+    move  $a0, $t4
 #ifdef BB_BOOT
     blez  $v0, .LA40008CC
-     nop
+    nop
 #else
     blezl $v0, .LA40008CC
-     slti  $k0, $t1, 0x50
+    slti  $k0, $t1, 0x50
 #endif
     subu  $k0, $v0, $t1
     multu $k0, $t4
@@ -833,9 +836,9 @@ func_A4000880:
 #endif
     bnez  $k0, .LA4000894
 #ifdef BB_BOOT
-     nop
+    nop
 #else
-     addiu $t4, $t4, 1
+    addiu $t4, $t4, 1
 #endif
     sll   $a0, $t3, 2
     subu  $a0, $a0, $t3
@@ -843,15 +846,15 @@ func_A4000880:
     subu  $a0, $a0, $t3
     sll   $a0, $a0, 1
     jal   func_A4000980
-     addiu $a0, $a0, -0x370
+    addiu $a0, $a0, -0x370
 #ifdef BB_BOOT
     b     .LA40008FC
-     nop
+    nop
 .LA40008D4:
     move $v0, $zero
 #else
     b     .LA4000900
-     lw    $ra, 0x1c($sp)
+    lw    $ra, 0x1c($sp)
     move  $v0, $zero
 #endif
 .LA40008FC:
@@ -859,11 +862,11 @@ func_A4000880:
 .LA4000900:
 #ifdef BB_BOOT
     jr    $ra
-     addiu $sp, $sp, 0x20
+    addiu $sp, $sp, 0x20
 #else
     addiu $sp, $sp, 0x20
     jr    $ra
-     nop
+    nop
 #endif
 
 func_A400090C:
@@ -871,7 +874,7 @@ func_A400090C:
     sw    $ra, 0x1c($sp)
     move  $v0, $zero
     jal   func_A4000A40
-     li    $a1, 2
+    li    $a1, 2
     move  $fp, $zero
 .LA40008FC_cn:
     li    $k0, -1
@@ -895,10 +898,10 @@ func_A400090C:
     andi  $k0, $v1, 1
 #ifdef BB_BOOT
     beqz  $k0, .LA4000928_cn
-     nop
+    nop
 #else
     beql  $k0, $zero, .LA4000954
-     addiu $gp, $gp, 1
+    addiu $gp, $gp, 1
 #endif
     addiu $v0, $v0, 1
 #ifdef BB_BOOT
@@ -910,25 +913,25 @@ func_A400090C:
     slti  $k0, $gp, 8
     bnez  $k0, .LA4000940
 #ifdef BB_BOOT
-     nop
+    nop
 #else
-     srl   $v1, $v1, 1
+    srl   $v1, $v1, 1
 #endif
     addiu $fp, $fp, 1
     slti  $k0, $fp, 0xa
 #ifdef BB_BOOT
     bnez  $k0, .LA40008FC_cn
-     nop
+    nop
     lw    $ra, 0x1c($sp)
     jr    $ra
-     addiu $sp, $sp, 0x28
+    addiu $sp, $sp, 0x28
 #else
     bnezl $k0, .LA4000928
-     li    $k0, -1
+    li    $k0, -1
     lw    $ra, 0x1c($sp)
     addiu $sp, $sp, 0x28
     jr    $ra
-     nop
+    nop
 #endif
 
 func_A4000980:
@@ -952,13 +955,13 @@ func_A4000980:
 .LA40009A4:
 #ifdef BB_BOOT
     bnez  $k0, .LA400098C_cn
-     nop
+    nop
 #else
     bnezl $k0, .LA40009B8
-     move  $a0, $t6
+    move  $a0, $t6
 #endif
     b     .LA4000A30
-     move $v0, $zero
+    move $v0, $zero
 #ifdef BB_BOOT
 .LA400098C_cn:
 #endif
@@ -967,11 +970,11 @@ func_A4000980:
 .LA40009B8:
 #endif
     jal   func_A4000A40
-     li    $a1, 1
+    li    $a1, 1
     jal   func_A4000AD0
-     addiu $a0, $sp, 0x27
+    addiu $a0, $sp, 0x27
     jal   func_A4000AD0
-     addiu $a0, $sp, 0x27
+    addiu $a0, $sp, 0x27
     lbu   $k0, 0x27($sp)
     li    $k1, 800
 #ifdef BB_BOOT
@@ -980,53 +983,53 @@ func_A4000980:
     lw    $a0, 0x20($sp)
     subu  $k0, $t0, $a0
     bgez  $k0, .LA40009CC
-     nop
+    nop
     subu  $k0, $a0, $t0
 .LA40009CC:
     slt   $k1, $k0, $t5
     beqz  $k1, .LA40009E0
-     nop
+    nop
     move $t5, $k0
     move $t2, $t6
 .LA40009E0:
     lw    $a0, 0x20($sp)
     slt   $k1, $t0, $a0
     beqz  $k1, .LA4000A00
-     nop
+    nop
     addiu $t6, $t6, 1
     slti  $k1, $t6, 0x41
     bnez  $k1, .LA4000978
-     nop
+    nop
 .LA4000A00:
     addu  $v0, $t2, $t6
     srl   $v0, $v0, 1
 .LA4000A30:
     lw    $ra, 0x1c($sp)
     jr    $ra
-     addiu $sp, $sp, 0x28
+    addiu $sp, $sp, 0x28
 #else
     lw    $a0, 0x20($sp)
     multu $k0, $k1
     mflo  $t0
     subu  $k0, $t0, $a0
     bgezl $k0, .LA40009F8
-     slt   $k1, $k0, $t5
+    slt   $k1, $k0, $t5
     subu  $k0, $a0, $t0
     slt   $k1, $k0, $t5
 .LA40009F8:
     beql  $k1, $zero, .LA4000A0C
-     lw    $a0, 0x20($sp)
+    lw    $a0, 0x20($sp)
     move  $t5, $k0
     move  $t2, $t6
     lw    $a0, 0x20($sp)
 .LA4000A0C:
     slt   $k1, $t0, $a0
     beql  $k1, $zero, .LA4000A2C
-     addu  $v0, $t2, $t6
+    addu  $v0, $t2, $t6
     addiu $t6, $t6, 1
     slti  $k1, $t6, 0x41
     bnezl $k1, .LA40009A4
-     slti  $k0, $t6, 0x40
+    slti  $k0, $t6, 0x40
     addu  $v0, $t2, $t6
 .LA4000A2C:
     srl   $v0, $v0, 1
@@ -1034,7 +1037,7 @@ func_A4000980:
     lw    $ra, 0x1c($sp)
     addiu $sp, $sp, 0x28
     jr    $ra
-     nop
+    nop
 #endif
 
 func_A4000A40:
@@ -1046,14 +1049,14 @@ func_A4000A40:
     xori  $a0, $a0, 0x3f
     li    $k1, 1
     bne   $a1, $k1, .LA4000A64
-     nop
+    nop
 #else
     andi  $a0, $a0, 0xff
     li    $k1, 1
     xori  $a0, $a0, 0x3f
     sw    $ra, 0x1c($sp)
     bne   $a1, $k1, .LA4000A64
-     lui   $t7, 0x4600
+    lui   $t7, 0x4600
 #endif
     lui   $k0, 0x8000
     or    $t7, $t7, $k0
@@ -1080,11 +1083,11 @@ func_A4000A40:
     sw    $t7, ($s5)
     li    $k1, 1
     bne   $a1, $k1, .LA4000AC0
-     nop
+    nop
 #else
     li    $k1, 1
     bne   $a1, $k1, .LA4000AC0
-     sw    $t7, ($s5)
+    sw    $t7, ($s5)
 #endif
     lui   $k0, %hi(PHYS_TO_K1(MI_BASE_REG))
     sw    $zero, %lo(PHYS_TO_K1(MI_BASE_REG))($k0)
@@ -1092,11 +1095,11 @@ func_A4000A40:
     lw    $ra, 0x1c($sp)
 #ifdef BB_BOOT
     jr    $ra
-     addiu $sp, $sp, 0x28
+    addiu $sp, $sp, 0x28
 #else
     addiu $sp, $sp, 0x28
     jr    $ra
-     nop
+    nop
 #endif
 
 func_A4000AD0:
@@ -1148,12 +1151,12 @@ func_A4000AD0:
     lw    $ra, 0x1c($sp)
 #ifdef BB_BOOT
     jr    $ra
-     addiu $sp, $sp, 0x28
+    addiu $sp, $sp, 0x28
 .fill 0x30
 #else
     addiu $sp, $sp, 0x28
     jr    $ra
-     nop
+    nop
     nop
 #endif
 

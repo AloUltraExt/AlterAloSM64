@@ -24,7 +24,7 @@ struct TextLabel {
  * Stores the text to be rendered on screen
  * and how they are to be rendered.
  */
-FORCE_BSS struct TextLabel *sTextLabels[52];
+struct TextLabel *sTextLabels[52];
 s16 sTextLabelsCount = 0;
 
 /**

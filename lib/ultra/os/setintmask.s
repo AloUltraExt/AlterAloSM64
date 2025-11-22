@@ -6,20 +6,13 @@
 
 #define MI_INTR_MASK ((1 << 6) - 1)
 
-#ifdef BBPLAYER
-#define XOR_VALUE 0xFFFFFFFF
-#else
+/* 0xFFFFFFFF crashes PJ64 */
 #define XOR_VALUE ~0
-#endif
 
 #if LIBULTRA_VERSION > OS_VER_D
 #define RO_MOVE ta0
 #else
 #define RO_MOVE t1
-#endif
-
-#ifdef BBPLAYER
-.set mips2
 #endif
 
 .globl __osRcpImTable

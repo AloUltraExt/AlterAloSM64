@@ -56,12 +56,12 @@ extern struct MainPoolBlock *sPoolListHeadR;
  */
 struct MemoryPool *gEffectsMemoryPool;
 
-FORCE_BSS uintptr_t sSegmentTable[32];
-FORCE_BSS u32 sPoolFreeSpace;
-FORCE_BSS u8 *sPoolStart;
-FORCE_BSS u8 *sPoolEnd;
-FORCE_BSS struct MainPoolBlock *sPoolListHeadL;
-FORCE_BSS struct MainPoolBlock *sPoolListHeadR;
+uintptr_t sSegmentTable[32];
+u32 sPoolFreeSpace;
+u8 *sPoolStart;
+u8 *sPoolEnd;
+struct MainPoolBlock *sPoolListHeadL;
+struct MainPoolBlock *sPoolListHeadR;
 
 static struct MainPoolState *gMainPoolState = NULL;
 

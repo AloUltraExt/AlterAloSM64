@@ -89,20 +89,6 @@ SECTIONS
     }
     END_NOLOAD(main)
 
-#ifdef VERSION_CN
-    // Hack for CN to make these asm files to match, since we aren't using
-    // the original assembler and so can't get lui/ori from la pseudo
-
-    // asm/entry.s
-    CREATE_LO_HI_PAIR(_mainSegmentNoloadStart, ADDR (.main.noload))
-    CREATE_LO_HI_PAIR(gIdleThreadStack, gIdleThreadStack)
-    CREATE_LO_HI_PAIR(main_func, main_func)
-
-    // asm/boot.s
-    SP_DMEM_CN_UNK0 = 0x0400049C;
-    SP_DMEM_CN_UNK1 = 0x0400074C;
-#endif
-
     . = _mainSegmentNoloadEnd;
 
     BEGIN_SEG(engine, .)

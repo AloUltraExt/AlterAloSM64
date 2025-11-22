@@ -3,10 +3,10 @@
 #include "piint.h"
 #include "macros.h"
 
-FORCE_BSS ALIGNED8 OSThread piThread;
-FORCE_BSS ALIGNED16 u8 piMgrStack[OS_PIM_STACKSIZE];
-FORCE_BSS ALIGNED8 OSMesgQueue piEventQueue;
-FORCE_BSS OSMesg piEventBuf[1];
+ALIGNED8 OSThread piThread;
+ALIGNED16 u8 piMgrStack[OS_PIM_STACKSIZE];
+ALIGNED8 OSMesgQueue piEventQueue;
+OSMesg piEventBuf[1];
 
 OSDevMgr __osPiDevMgr = { 0 };
 #if LIBULTRA_VERSION >= OS_VER_F

@@ -28,16 +28,16 @@
 #define LANGUAGE_FUNCTION gInGameLanguage
 #endif
 
-FORCE_BSS u16 gMenuTextColorTransTimer;
-FORCE_BSS s8 gLastDialogLineNum;
-FORCE_BSS s32 gDialogVariable;
-FORCE_BSS u16 gMenuTextAlpha;
+u16 gMenuTextColorTransTimer;
+s8 gLastDialogLineNum;
+s32 gDialogVariable;
+u16 gMenuTextAlpha;
 #ifdef VERSION_EU
 s16 gDialogX;
 s16 gDialogY;
 #endif
-FORCE_BSS s16 gCutsceneMsgXOffset;
-FORCE_BSS s16 gCutsceneMsgYOffset;
+s16 gCutsceneMsgXOffset;
+s16 gCutsceneMsgYOffset;
 s8 gRedCoinsCollected;
 
 extern u8 gLastCompletedCourseNum;
