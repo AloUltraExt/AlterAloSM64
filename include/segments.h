@@ -18,7 +18,6 @@
 #ifdef USE_EXT_RAM
 
 #ifdef BBPLAYER
-
 #define RAM_END          0x807C0000 // iQue has stuff like EEPROM mapped at 807C0000 onwards. TODO: Code this using osMemSize
 #else
 #define RAM_END          0x80800000
@@ -34,7 +33,6 @@
  */
 
 #define SEG_POOL_START   _framebuffersSegmentNoloadEnd // 0x0165000 in size
-#define SEG_GODDARD      SEG_POOL_START + 0x113000
 
 #define POOL_SIZE        RAM_END - SEG_POOL_START
 

@@ -75,7 +75,9 @@ SECTIONS
         BUILD_DIR/lib/rsp.o(.rodata*);
     }
     END_SEG(main)
-
+    #ifndef PRELIMINARY
+        ASSERT((_mainSegmentRomEnd <= 0x101000), "Error: Please shrink your main segment to under 1MB.")
+    #endif
     BEGIN_NOLOAD(main)
     {
         BUILD_DIR/src/game*.o(.bss*);
@@ -128,7 +130,12 @@ SECTIONS
     __mainPoolStart = .;
     __mainPoolSize = RAM_END - .;
 
-    ASSERT((. <= (SEG_POOL_START + POOL_SIZE)), "Error: extended past pool end.")
+    #ifndef PRELIMINARY
+        ASSERT((. <= (SEG_POOL_START + POOL_SIZE)), "Error: extended past pool end.")
+    #endif
+    #ifdef PRELIMINARY
+        GODDARD_SIZE = SIZEOF(.goddard) + SIZEOF(.goddard.noload);
+    #endif
 
     BEGIN_SEG(entry, 0x10000000)
     {
@@ -178,7 +185,11 @@ SECTIONS
     END_SEG(behavior)
 
     /* 0x8016F000 21D7D0-255EC0 [386F0] */
-    BEGIN_SEG(goddard, SEG_GODDARD)
+#ifndef PRELIMINARY
+    BEGIN_SEG(goddard, RAM_END - GODDARD_SIZE)
+#else
+    BEGIN_SEG(goddard, 0x80345678)
+#endif
     {
         BUILD_DIR/src/menu*.o(.text);
         BUILD_DIR/libgoddard.a:*.o(.text);
@@ -344,8 +355,10 @@ SECTIONS
         *(*);
     }
 
+#ifndef PRELIMINARY
     ASSERT((_goddardSegmentNoloadEnd <= SEG_POOL_START + POOL_SIZE), "Error: menu segment extended past pool end")
     ASSERT((_mainSegmentNoloadEnd <= _engineSegmentStart), "Error: main segment extended into engine.")
     ASSERT((_engineSegmentNoloadEnd <= _framebuffersSegmentNoloadStart), "Error: engine segment extended into framebuffers.")
     ASSERT((_framebuffersSegmentNoloadEnd <= RAM_END), "Error: framebuffers segment extended past RDRAM end")
+#endif
 }
