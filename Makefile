@@ -18,10 +18,9 @@ DEFINES :=
 # Build for the N64 (turn this off for ports)
 TARGET_N64 ?= 1
 
-
 # COMPILER - selects the C compiler to use
 COMPILER ?= gcc
-$(eval $(call validate-option,COMPILER, gcc))
+$(eval $(call validate-option,COMPILER,gcc))
 
 # Various workarounds for weird and/or old toolchains
 CPP_ASSEMBLY ?= 0
@@ -86,28 +85,11 @@ DEFINES += NON_MATCHING=1 AVOID_UB=1
 
 MIPSISET     := -mips3
 OPT_FLAGS    := -O2
-ifeq ($(VERSION),cn)
-  LIBULTRA ?= BB
-else
-  LIBULTRA ?= L
-endif
 
 # Whether to hide commands or not
 VERBOSE ?= 0
 ifeq ($(VERBOSE),0)
   V := @
-endif
-
-# Whether to colorize build messages
-COLOR ?= 1
-
-# display selected options unless 'make clean' or 'make distclean' is run
-ifeq ($(filter clean distclean,$(MAKECMDGOALS)),)
-  $(info ==== Build Options ====)
-  $(info Version:        $(VERSION))
-  $(info Microcode:      $(GRUCODE))
-  $(info Target:         $(TARGET))
-  $(info =======================)
 endif
 
 DEFINES += _FINALROM=1
@@ -121,37 +103,26 @@ endif
 #==============================================================================#
 
 TOOLS_DIR := tools
-
-# (This is a bit hacky, but a lot of rules implicitly depend
-# on tools and assets, and we use directory globs further down
-# in the makefile that we want should cover assets.)
-
 PYTHON := python3
 
-ifeq ($(filter clean distclean print-%,$(MAKECMDGOALS)),)
-
-  # Make sure assets exist
-  NOEXTRACT ?= 0
-  ifeq ($(NOEXTRACT),0)
-    DUMMY != $(PYTHON) extract_assets.py $(VERSION) >&2 || echo FAIL
-    ifeq ($(DUMMY),FAIL)
-      $(error Failed to extract assets)
+ifeq ($(filter all default,$(MAKECMDGOALS)),$(MAKECMDGOALS))
+  ifeq ($(MAKE_RESTARTS),)
+    # Extract Assets
+    NOEXTRACT ?= 0
+    ifeq ($(NOEXTRACT),0)
+      $(eval $(call run_tool, $(PYTHON) extract_assets.py $(VERSION), Failed to extract assets))
     endif
+
+    # Build General Tools
+    $(info Building general tools...)
+    $(eval $(call run_tool, $(MAKE) -s -C $(TOOLS_DIR), Failed to build tools))
+
+    # Build sm64tools
+    $(info Building sm64tools...)
+    $(eval $(call run_tool, $(MAKE) -s -C $(TOOLS_DIR)/sm64tools, Failed to build sm64tools))
+
+    $(info Building ROM...)
   endif
-
-  # Make tools if out of date
-  $(info Building general tools...)
-  DUMMY != $(MAKE) -s -C $(TOOLS_DIR) >&2 || echo FAIL
-    ifeq ($(DUMMY),FAIL)
-      $(error Failed to build tools)
-    endif
-  $(info Building sm64tools...)
-  DUMMY != $(MAKE) -s -C $(TOOLS_DIR)/sm64tools >&2 || echo FAIL
-    ifeq ($(DUMMY),FAIL)
-      $(error Failed to build tools)
-    endif
-  $(info Building ROM...)
-
 endif
 
 #==============================================================================#
@@ -176,9 +147,6 @@ LEVEL_DIRS     := $(patsubst levels/%,%,$(dir $(wildcard levels/*/header.h)))
 SRC_DIRS := src src/engine src/game src/menu src/buffers src/audio $(AUDIO_SRC_DIR) actors levels bin data assets asm lib sound
 BIN_DIRS := bin bin/$(VERSION)
 
-LIBGCC_SRC_DIRS += lib/gcc
-GODDARD_SRC_DIRS := src/goddard src/goddard/dynlists
-
 # File dependencies and variables for specific files
 include Makefile.split
 
@@ -186,8 +154,6 @@ include Makefile.split
 LEVEL_C_FILES     := $(wildcard levels/*/leveldata.c) $(wildcard levels/*/script.c) $(wildcard levels/*/geo.c)
 C_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c)) $(LEVEL_C_FILES)
 S_FILES           := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.s))
-GODDARD_C_FILES   := $(foreach dir,$(GODDARD_SRC_DIRS),$(wildcard $(dir)/*.c))
-LIBGCC_C_FILES    := $(foreach dir,$(LIBGCC_SRC_DIRS),$(wildcard $(dir)/*.c))
 GENERATED_C_FILES := $(BUILD_DIR)/assets/mario_anim_data.c $(BUILD_DIR)/assets/demo_data.c
 
 # Sound files
@@ -213,33 +179,15 @@ O_FILES := $(foreach file,$(C_FILES),$(BUILD_DIR)/$(file:.c=.o)) \
            $(foreach file,$(S_FILES),$(BUILD_DIR)/$(file:.s=.o)) \
            $(foreach file,$(GENERATED_C_FILES),$(file:.c=.o))
 
-GODDARD_O_FILES := $(foreach file,$(GODDARD_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
-
-LIBGCC_O_FILES := $(foreach file,$(LIBGCC_C_FILES),$(BUILD_DIR)/$(file:.c=.o))
-
 # Automatic dependency files
-DEP_FILES := $(O_FILES:.o=.d) $(GODDARD_O_FILES:.o=.d) $(LIBGCC_O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
+DEP_FILES := $(O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
 
 #==============================================================================#
 # Compiler Options                                                             #
 #==============================================================================#
 
 # detect prefix for MIPS toolchain
-ifneq ($(call find-command,mips64-elf-ld),)
-  CROSS := mips64-elf-
-# else ifneq ($(call find-command,mips-n64-ld),)
-#   CROSS := mips-n64-
-else ifneq ($(call find-command,mips64-ld),)
-  CROSS := mips64-
-else ifneq ($(call find-command,mips-linux-gnu-ld),)
-  CROSS := mips-linux-gnu-
-else ifneq ($(call find-command,mips64-linux-gnu-ld),)
-  CROSS := mips64-linux-gnu-
-else ifneq ($(call find-command,mips-ld),)
-  CROSS := mips-
-else
-  $(error Unable to detect a suitable MIPS toolchain installed)
-endif
+CROSS := $(call find-mips-toolchain)
 
 AS            := $(CROSS)as
 CC            := $(CROSS)gcc
@@ -258,10 +206,16 @@ ifeq ($(TARGET_N64),1)
   INCLUDE_DIRS += include/gcc
 endif
 
+# Process libraries
+LIBS :=
+AR_LIBS :=
+include mk/lib/libultra.mk
+include mk/lib/libgoddard.mk
+include mk/lib/libgcc.mk
+LINK_LIBS := $(foreach i,$(LIBS),-l$(i))
+
 C_DEFINES := $(foreach d,$(DEFINES),-D$(d))
 DEF_INC_CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(C_DEFINES)
-
-include libultra.mk
 
 # Prefer clang as C preprocessor if installed on the system
 ifneq (,$(call find-command,clang))
@@ -276,13 +230,15 @@ endif
 CFLAGS = -G 0 $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
 CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra -Wno-trigraphs -Wno-missing-braces
 
+AS_DEFINES := $(foreach d,$(DEFINES), $(if $(call is_numeric,$(lastword $(subst =, ,$(d)))),$(d)))
+
 ifeq ($(CPP_ASSEMBLY),1)
-  ASFLAGS  := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(DEFINES),--defsym $(d))
+  ASFLAGS  := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(AS_DEFINES),--defsym $(d))
 else
   ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
 endif
 
-RSPASMFLAGS := $(foreach d,$(DEFINES),-definelabel $(subst =, ,$(d)))
+RSPASMFLAGS := $(foreach d,$(AS_DEFINES),-definelabel $(subst =, ,$(d)))
 
 SYMLINKFLAGS := --no-check-sections $(addprefix -R ,$(SEG_FILES))
 LDFLAGS := -T $(BUILD_DIR)/$(LD_SCRIPT) -Map $(BUILD_DIR)/sm64.$(VERSION).map $(SYMLINKFLAGS)
@@ -313,27 +269,17 @@ EMU_FLAGS = --noosd
 LOADER = loader64
 LOADER_FLAGS = -vwf
 SHA1SUM = sha1sum
-PRINT = printf
-
-ifeq ($(COLOR),1)
-NO_COL  := \033[0m
-RED     := \033[0;31m
-GREEN   := \033[0;32m
-BLUE    := \033[0;34m
-YELLOW  := \033[0;33m
-BLINK   := \033[33;5m
-endif
-
-# Common build print status function
-define print
-  @$(PRINT) "$(GREEN)$(1) $(YELLOW)$(2)$(GREEN) -> $(BLUE)$(3)$(NO_COL)\n"
-endef
 
 #==============================================================================#
 # Main Targets                                                                 #
 #==============================================================================#
 
 all: $(ROM)
+	@$(SHA1SUM) $(ROM)
+	@$(PRINT) "${REVERSE}Build succeeded.$(NO_COL)\n"
+	@$(PRINT) "${B_WHITE}==== Build Options ====$(NO_COL)\n"
+	@$(PRINT) "${B_GREEN}Version:        $(B_CYAN)$(VERSION)$(NO_COL)\n"
+	@$(PRINT) "${B_GREEN}Microcode:      $(B_CYAN)$(GRUCODE)$(NO_COL)\n"
 
 clean:
 	$(RM) -r $(BUILD_DIR_BASE)
@@ -481,7 +427,7 @@ $(ENDIAN_BITWIDTH): $(TOOLS_DIR)/determine-endian-bitwidth.c
 	$(V)$(RM) $@.dummy2
 
 $(SOUND_BIN_DIR)/sound_data.ctl: sound/sound_banks/ $(SOUND_BANK_FILES) $(SOUND_SAMPLE_AIFCS) $(ENDIAN_BITWIDTH)
-	@$(PRINT) "$(GREEN)Generating:  $(BLUE)$@ $(NO_COL)\n"
+	@$(PRINT) "$(GREEN)Generating:  $(CYAN)$@ $(NO_COL)\n"
 	$(V)$(PYTHON) $(TOOLS_DIR)/assemble_sound.py $(BUILD_DIR)/sound/samples/ sound/sound_banks/ $(SOUND_BIN_DIR)/sound_data.ctl $(SOUND_BIN_DIR)/ctl_header $(SOUND_BIN_DIR)/sound_data.tbl $(SOUND_BIN_DIR)/tbl_header $(C_DEFINES) $$(cat $(ENDIAN_BITWIDTH))
 
 $(SOUND_BIN_DIR)/sound_data.tbl: $(SOUND_BIN_DIR)/sound_data.ctl
@@ -494,7 +440,7 @@ $(SOUND_BIN_DIR)/tbl_header: $(SOUND_BIN_DIR)/sound_data.ctl
 	@true
 
 $(SOUND_BIN_DIR)/sequences.bin: $(SOUND_BANK_FILES) sound/sequences.json $(SOUND_SEQUENCE_DIRS) $(SOUND_SEQUENCE_FILES) $(ENDIAN_BITWIDTH)
-	@$(PRINT) "$(GREEN)Generating:  $(BLUE)$@ $(NO_COL)\n"
+	@$(PRINT) "$(GREEN)Generating:  $(CYAN)$@ $(NO_COL)\n"
 	$(V)$(PYTHON) $(TOOLS_DIR)/assemble_sound.py --sequences $@ $(SOUND_BIN_DIR)/sequences_header $(SOUND_BIN_DIR)/bank_sets sound/sound_banks/ sound/sequences.json $(SOUND_SEQUENCE_FILES) $(C_DEFINES) $$(cat $(ENDIAN_BITWIDTH))
 
 $(SOUND_BIN_DIR)/bank_sets: $(SOUND_BIN_DIR)/sequences.bin
@@ -542,13 +488,13 @@ $(BUILD_DIR)/include/text_menu_strings.h: include/text_menu_strings.h.in
 	$(call print,Encoding:,$<,$@)
 	$(V)$(TEXTCONV) charmap_menu.txt $< $@
 $(BUILD_DIR)/text/%/define_courses.inc.c: text/define_courses.inc.c text/%/courses.h
-	@$(PRINT) "$(GREEN)Preprocessing: $(BLUE)$@ $(NO_COL)\n"
+	@$(PRINT) "$(GREEN)Preprocessing: $(CYAN)$@ $(NO_COL)\n"
 	$(V)$(CPP) $(CPPFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) $(BUILD_DIR)/$(CHARMAP) - $@
 $(BUILD_DIR)/text/%/define_text.inc.c: text/define_text.inc.c text/%/courses.h text/%/dialogs.h
-	@$(PRINT) "$(GREEN)Preprocessing: $(BLUE)$@ $(NO_COL)\n"
+	@$(PRINT) "$(GREEN)Preprocessing: $(CYAN)$@ $(NO_COL)\n"
 	$(V)$(CPP) $(CPPFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) $(BUILD_DIR)/$(CHARMAP) - $@
 $(BUILD_DIR)/text/debug_text.raw.inc.c: text/debug_text.inc.c $(BUILD_DIR)/$(CHARMAP_DEBUG)
-	@$(PRINT) "$(GREEN)Preprocessing: $(BLUE)$@ $(NO_COL)\n"
+	@$(PRINT) "$(GREEN)Preprocessing: $(CYAN)$@ $(NO_COL)\n"
 	$(V)$(CPP) $(CPPFLAGS) $< -o - -I text/$*/ | $(TEXTCONV) $(BUILD_DIR)/$(CHARMAP_DEBUG) - $@
 
 # Level headers
@@ -588,34 +534,24 @@ $(BUILD_DIR)/$(LD_SCRIPT): $(LD_SCRIPT) $(BUILD_DIR)/goddard.txt
 	$(call print,Preprocessing linker script:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -DBUILD_DIR=$(BUILD_DIR) -MMD -MP -MT $@ -MF $@.d -o $@ $<
 
-# Link libgcc
-$(BUILD_DIR)/libgcc.a: $(LIBGCC_O_FILES)
-	@$(PRINT) "$(GREEN)Linking libgcc:  $(BLUE)$@ $(NO_COL)\n"
-	$(V)$(AR) rcs -o $@ $(LIBGCC_O_FILES)
-
-# Link libgoddard
-$(BUILD_DIR)/libgoddard.a: $(GODDARD_O_FILES)
-	@$(PRINT) "$(GREEN)Linking libgoddard:  $(BLUE)$@ $(NO_COL)\n"
-	$(V)$(AR) rcs -o $@ $(GODDARD_O_FILES)
-
 # SS2: Goddard rules to get size
-$(BUILD_DIR)/sm64_prelim.ld: $(LD_SCRIPT) $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $(LIBULTRA_AR) $(BUILD_DIR)/libgoddard.a $(BUILD_DIR)/libgcc.a
+$(BUILD_DIR)/sm64_prelim.ld: $(LD_SCRIPT) $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $(AR_LIBS)
 	$(call print,Preprocessing preliminary linker script:,$<,$@)
 	$(V)$(CPP) $(CPPFLAGS) -DPRELIMINARY=1 -DBUILD_DIR=$(BUILD_DIR) -MMD -MP -MT $@ -MF $@.d -o $@ $<
 
 $(BUILD_DIR)/sm64_prelim.elf: $(BUILD_DIR)/sm64_prelim.ld
-	@$(PRINT) "$(GREEN)Linking Preliminary ELF file: $(BLUE)$@ $(NO_COL)\n"
+	@$(PRINT) "$(GREEN)Linking Preliminary ELF file: $(CYAN)$@ $(NO_COL)\n"
     # Slightly edited version of LDFLAGS
-	$(V)$(LD) -L $(BUILD_DIR) -T $< -Map $(BUILD_DIR)/sm64_prelim.map $(SYMLINKFLAGS) -o $@ $(O_FILES) -lultra -lgoddard -lgcc
+	$(V)$(LD) -L $(BUILD_DIR) -T $< -Map $(BUILD_DIR)/sm64_prelim.map $(SYMLINKFLAGS) -o $@ $(O_FILES) $(LINK_LIBS)
 
 $(BUILD_DIR)/goddard.txt: $(BUILD_DIR)/sm64_prelim.elf
 	$(call print,Getting Goddard size...)
 	$(V)$(PYTHON) $(TOOLS_DIR)/get_goddard_size.py $(BUILD_DIR)/sm64_prelim.map $(BUILD_DIR)
 
 # Link SM64 ELF file
-$(ELF): $(BUILD_DIR)/sm64_prelim.elf $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) $(LIBULTRA_AR) $(BUILD_DIR)/libgoddard.a $(BUILD_DIR)/libgcc.a
-	@$(PRINT) "$(GREEN)Linking ELF file:  $(BLUE)$@ $(NO_COL)\n"
-	$(V)$(LD) -L $(BUILD_DIR) $(LDFLAGS) $(BUILD_DIR)/goddard.txt -o $@ $(O_FILES) -lultra -lgoddard -lgcc
+$(ELF): $(BUILD_DIR)/sm64_prelim.elf $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $(BUILD_DIR)/$(LD_SCRIPT) $(AR_LIBS)
+	@$(PRINT) "$(GREEN)Linking ELF file:  $(CYAN)$@ $(NO_COL)\n"
+	$(V)$(LD) -L $(BUILD_DIR) $(LDFLAGS) $(BUILD_DIR)/goddard.txt -o $@ $(O_FILES) $(LINK_LIBS)
 
 # Build ROM
 $(ROM): $(ELF)
@@ -626,7 +562,7 @@ $(ROM): $(ELF)
 $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@
 
-.PHONY: all clean distclean default diff test load libultra
+.PHONY: all clean distclean default test load libultra libgoddard libgcc
 # with no prerequisites, .SECONDARY causes no intermediate target to be removed
 .SECONDARY:
 
