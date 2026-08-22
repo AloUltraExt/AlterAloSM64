@@ -19,8 +19,10 @@ DEFINES :=
 TARGET_N64 ?= 1
 
 # COMPILER - selects the C compiler to use
+#   gcc - uses the GNU C Compiler
+#   clang - uses clang C/C++ frontend for LLVM
 COMPILER ?= gcc
-$(eval $(call validate-option,COMPILER,gcc))
+$(eval $(call validate-option,COMPILER,gcc clang))
 
 # Various workarounds for weird and/or old toolchains
 CPP_ASSEMBLY ?= 0
@@ -83,8 +85,14 @@ endif
 # Mandatory defines to ensture correct compilation
 DEFINES += NON_MATCHING=1 AVOID_UB=1
 
-MIPSISET     := -mips3
-OPT_FLAGS    := -O2
+ifeq ($(COMPILER),gcc)
+  MIPSISET     := -mips3
+  OPT_FLAGS    := -O2
+else ifeq ($(COMPILER),clang)
+# clang doesn't support ABI 'o32' for 'mips3'
+  MIPSISET     := -mips2
+  OPT_FLAGS    ?= -O2
+endif
 
 # Whether to hide commands or not
 VERBOSE ?= 0
@@ -189,8 +197,12 @@ DEP_FILES := $(O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
 # detect prefix for MIPS toolchain
 CROSS := $(call find-mips-toolchain)
 
+ifeq ($(COMPILER),gcc)
+  CC      := $(CROSS)gcc
+else ifeq ($(COMPILER),clang)
+  CC      := clang
+endif
 AS            := $(CROSS)as
-CC            := $(CROSS)gcc
 LD            := $(CROSS)ld
 AR            := $(CROSS)ar
 OBJDUMP       := $(CROSS)objdump
@@ -228,14 +240,18 @@ endif
 
 # C compiler options
 CFLAGS = -G 0 $(TARGET_CFLAGS) $(DEF_INC_CFLAGS)
-CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra -Wno-trigraphs -Wno-missing-braces
+ifeq ($(COMPILER),gcc)
+  CFLAGS += -mno-shared -march=vr4300 -mfix4300 -mabi=32 -mhard-float -mdivide-breaks -fno-stack-protector -fno-common -fno-zero-initialized-in-bss -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra
+else ifeq ($(COMPILER),clang)
+  CFLAGS += -target mips -mabi=32 -mhard-float -fomit-frame-pointer -fno-stack-protector -fno-common -I include -I src/ -I $(BUILD_DIR)/include -fno-PIC -mno-abicalls -fno-strict-aliasing -fno-inline-functions -ffreestanding -fwrapv -Wall -Wextra
+endif
 
 AS_DEFINES := $(foreach d,$(DEFINES), $(if $(call is_numeric,$(lastword $(subst =, ,$(d)))),$(d)))
 
 ifeq ($(CPP_ASSEMBLY),1)
   ASFLAGS  := -march=vr4300 -mabi=32 $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(foreach d,$(AS_DEFINES),--defsym $(d))
 else
-  ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_LANGUAGE_ASSEMBLY -D_MIPS_SIM=1 -D_MIPS_SZLONG=32
+  ASMFLAGS := -G 0 $(DEF_INC_CFLAGS) -w -nostdinc -c -march=vr4300 -mfix4300 -mno-abicalls -DMIPSEB -D_MIPS_SIM=1 -D_MIPS_SZLONG=32 $(foreach i,$(INCLUDE_DIRS),-Wa,-I$(i))
 endif
 
 RSPASMFLAGS := $(foreach d,$(AS_DEFINES),-definelabel $(subst =, ,$(d)))
@@ -305,10 +321,6 @@ $(BUILD_DIR)/levels/scripts.o:        $(BUILD_DIR)/include/level_headers.h
 $(BUILD_DIR)/src/audio/sh/load.o: $(SOUND_BIN_DIR)/bank_sets.inc.c $(SOUND_BIN_DIR)/sequences_header.inc.c $(SOUND_BIN_DIR)/ctl_header.inc.c $(SOUND_BIN_DIR)/tbl_header.inc.c
 
 $(CRASH_TEXTURE_C_FILES): TEXTURE_ENCODING := u32
-
-ifeq ($(COMPILER),gcc)
-  $(BUILD_DIR)/lib/src/math/%.o: CFLAGS += -fno-builtin
-endif
 
 ifeq ($(VERSION),eu)
   TEXT_DIRS := text/de text/us text/fr
@@ -521,7 +533,7 @@ $(BUILD_DIR)/%.o: %.s
 ifeq ($(CPP_ASSEMBLY),1)
 	$(V)$(CPP) $(CPPFLAGS) -D_LANGUAGE_ASSEMBLY $< | $(AS) $(ASFLAGS) -MD $(BUILD_DIR)/$*.d -o $@
 else
-	$(V)$(CC) -c $(ASMFLAGS) -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d -o $@ $<
+	$(V)$(CROSS)gcc -c $(ASMFLAGS) -D_LANGUAGE_ASSEMBLY -x assembler-with-cpp -MMD -MF $(BUILD_DIR)/$*.d -o $@ $<
 endif
 
 # Assemble RSP assembly code
@@ -556,8 +568,8 @@ $(ELF): $(BUILD_DIR)/sm64_prelim.elf $(O_FILES) $(MIO0_OBJ_FILES) $(SEG_FILES) $
 # Build ROM
 $(ROM): $(ELF)
 	$(call print,Building ROM:,$<,$@)
-	$(V)$(OBJCOPY) --pad-to=0x800000 --gap-fill=0xFF $< $(@:.z64=.bin) -O binary
-	$(V)$(N64CKSUM) $(@:.z64=.bin) $@
+	$(V)$(OBJCOPY) --pad-to=0x800000 --gap-fill=0xFF $< $@ -O binary
+	$(V)$(N64CKSUM) $@
 
 $(BUILD_DIR)/$(TARGET).objdump: $(ELF)
 	$(OBJDUMP) -D $< > $@

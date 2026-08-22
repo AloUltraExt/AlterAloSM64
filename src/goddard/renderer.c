@@ -1464,12 +1464,7 @@ struct GdDisplayList *create_child_gdl(s32 id, struct GdDisplayList *srcDl) {
     newDl = alloc_displaylist(id);
     newDl->parent = srcDl;
     cpy_remaining_gddl(newDl, srcDl);
-//! @bug No return statement, despite return value being used.
-//!      Goddard lucked out that `v0` return from alloc_displaylist()
-//!      is not overwriten, as that pointer is what should be returned
-#ifdef AVOID_UB
     return newDl;
-#endif
 }
 
 /* 24B7F8 -> 24BA48; orig name: func_8019D028 */
@@ -2792,14 +2787,7 @@ s32 setup_view_buffers(const char *name, struct ObjView *view, UNUSED s32 ulx, U
         view->parent = D_801A86E0;
     }
 
-//! @bug No actual return, but the return value is used.
-//!      There is no obvious value to return. Since the function
-//!      doesn't use four of its parameters, this function may have
-//!      had a fair amount of its code commented out. In game, the
-//!      returned value is always 0, so the fix returns that value
-#ifdef AVOID_UB
     return 0;
-#endif
 }
 
 /* 252AF8 -> 252BAC; orig name: _InitControllers */
@@ -2831,10 +2819,7 @@ void stub_renderer_6(UNUSED struct GdObj *obj) {
  * @return  an identifier of the menu just defined
  */
 long defpup(UNUSED const char *menufmt, ...) {
-    //! @bug no return; function was stubbed
-#ifdef AVOID_UB
    return 0;
-#endif
 }
 
 /**
@@ -3742,6 +3727,11 @@ static void gd_block_dma(u32 romAddr, void *vAddr, s32 size) {
     } while (size > 0);
 }
 
+// AlterAlo note:
+// TLB map code, disable optimizations to prevent TLB exception on load crash.
+#if defined(__clang__)
+#pragma clang optimize off
+#endif
 /**
  * Loads the specified DynList from ROM and processes it.
  */
@@ -3816,6 +3806,9 @@ struct GdObj *load_dynlist(struct DynList *dynlist) {
 
     return loadedList;
 }
+#if defined(__clang__)
+#pragma clang optimize on
+#endif
 #else
 struct GdObj *load_dynlist(struct DynList *dynlist) {
     return proc_dynlist(dynlist);
