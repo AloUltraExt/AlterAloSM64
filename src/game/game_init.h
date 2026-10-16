@@ -64,6 +64,11 @@ extern u8 gDemoInputs[];
 extern u16 sRenderingFramebuffer;
 extern u32 gGlobalTimer;
 
+extern s8 gDebugLevelSelect;
+extern s8 gShowProfiler;
+extern s8 gShowDebugText;
+extern s8 gDebugKeyCombo;
+
 void setup_game_memory(void);
 void thread5_game_loop(UNUSED void *arg);
 void clear_framebuffer(s32 color);

@@ -3109,10 +3109,12 @@ static void print_file_select_strings(void) {
     }
 
     // AlterAlo note: Key combo to skip intro cutscene
-    if ((gPlayer1Controller->buttonDown == (L_TRIG | R_TRIG)) && sCurrentMenuLevel == MENU_LAYER_MAIN) {
-        if (!(gCurrGameSkip & GAME_SKIP_INTRO_SCENE)) {
-            play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
-            gCurrGameSkip |= GAME_SKIP_INTRO_SCENE;
+    if (gDebugKeyCombo) {
+        if ((gPlayer1Controller->buttonDown == (L_TRIG | R_TRIG)) && sCurrentMenuLevel == MENU_LAYER_MAIN) {
+            if (!(gCurrGameSkip & GAME_SKIP_INTRO_SCENE)) {
+                play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
+                gCurrGameSkip |= GAME_SKIP_INTRO_SCENE;
+            }
         }
     }
 }

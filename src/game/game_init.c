@@ -54,9 +54,11 @@ void *gDemoInputsMemAlloc;
 struct DmaHandlerList gMarioAnimsBuf;
 struct DmaHandlerList gDemoInputsBuf;
 
-// fillers
-UNUSED u8 sfillerGameInit[0x90]; // not static because of bss
-s32 sUnusedGameInitValue = 0;
+// Debug variables
+s8 gShowProfiler = FALSE;
+s8 gShowDebugText = FALSE;
+s8 gDebugLevelSelect = FALSE;
+s8 gDebugKeyCombo = FALSE;
 
 // General timer that runs as the game starts
 u32 gGlobalTimer = 0;
@@ -386,6 +388,36 @@ void display_and_vsync(void) {
 // ----------------------------------------------------------------------------------------------------
 
 /**
+ * This function opens the profiler bars and the debug text when specific key sequences are pressed.
+ */
+void handle_debug_key_sequences(void) {
+    static u16 sProfilerKeySequence[] = {
+        U_JPAD, U_JPAD, D_JPAD, D_JPAD, L_JPAD, R_JPAD, L_JPAD, R_JPAD
+    };
+    static u16 sDebugTextKeySequence[] = { D_JPAD, D_JPAD, U_JPAD, U_JPAD,
+                                           L_JPAD, R_JPAD, L_JPAD, R_JPAD };
+    static s16 sProfilerKey = 0;
+    static s16 sDebugTextKey = 0;
+    if (gPlayer3Controller->buttonPressed != 0) {
+        if (sProfilerKeySequence[sProfilerKey++] == gPlayer3Controller->buttonPressed) {
+            if (sProfilerKey == ARRAY_COUNT(sProfilerKeySequence)) {
+                sProfilerKey = 0, gShowProfiler ^= 1;
+            }
+        } else {
+            sProfilerKey = 0;
+        }
+
+        if (sDebugTextKeySequence[sDebugTextKey++] == gPlayer3Controller->buttonPressed) {
+            if (sDebugTextKey == ARRAY_COUNT(sDebugTextKeySequence)) {
+                sDebugTextKey = 0, gShowDebugText ^= 1;
+            }
+        } else {
+            sDebugTextKey = 0;
+        }
+    }
+}
+
+/**
  * This function records distinct inputs over a 255-frame interval to RAM locations and was likely
  * used to record the demo sequences seen in the final game. This function is unused.
  */
@@ -693,7 +725,11 @@ void thread5_game_loop(UNUSED void *arg) {
 
         display_and_vsync();
 
-        // when debug info is enabled, print the "BUF %d" information.
+        // When debug key combo is enabled, check for sequences for debug info and profiler
+        if (gDebugKeyCombo) {
+            handle_debug_key_sequences();
+        }
+        // When debug info is enabled, print the "BUF %d" information.
         if (gShowDebugText) {
             // subtract the end of the gfx pool with the display list to obtain the
             // amount of free space remaining.

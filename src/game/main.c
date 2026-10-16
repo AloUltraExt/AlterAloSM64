@@ -52,39 +52,6 @@ s8 sAudioEnabled = TRUE;
 u32 gNumVblanks = 0;
 s8 gResetTimer = 0;
 s8 gNmiResetBarsTimer = 0;
-s8 gDebugLevelSelect = FALSE;
-s8 D_8032C650 = 0;
-
-s8 gShowProfiler = FALSE;
-s8 gShowDebugText = FALSE;
-
-// unused
-void handle_debug_key_sequences(void) {
-    static u16 sProfilerKeySequence[] = {
-        U_JPAD, U_JPAD, D_JPAD, D_JPAD, L_JPAD, R_JPAD, L_JPAD, R_JPAD
-    };
-    static u16 sDebugTextKeySequence[] = { D_JPAD, D_JPAD, U_JPAD, U_JPAD,
-                                           L_JPAD, R_JPAD, L_JPAD, R_JPAD };
-    static s16 sProfilerKey = 0;
-    static s16 sDebugTextKey = 0;
-    if (gPlayer3Controller->buttonPressed != 0) {
-        if (sProfilerKeySequence[sProfilerKey++] == gPlayer3Controller->buttonPressed) {
-            if (sProfilerKey == ARRAY_COUNT(sProfilerKeySequence)) {
-                sProfilerKey = 0, gShowProfiler ^= 1;
-            }
-        } else {
-            sProfilerKey = 0;
-        }
-
-        if (sDebugTextKeySequence[sDebugTextKey++] == gPlayer3Controller->buttonPressed) {
-            if (sDebugTextKey == ARRAY_COUNT(sDebugTextKeySequence)) {
-                sDebugTextKey = 0, gShowDebugText ^= 1;
-            }
-        } else {
-            sDebugTextKey = 0;
-        }
-    }
-}
 
 void unknown_main_func(void) {
     // uninitialized
@@ -444,9 +411,7 @@ void thread1_idle(UNUSED void *arg) {
     osCreatePiManager(OS_PRIORITY_PIMGR, &gPIMesgQueue, gPIMesgBuf, ARRAY_COUNT(gPIMesgBuf));
     crash_screen_init();
     create_thread(&gMainThread, 3, thread3_main, NULL, gThread3Stack + 0x2000, 100);
-    if (D_8032C650 == 0) {
-        osStartThread(&gMainThread);
-    }
+    osStartThread(&gMainThread);
     osSetThreadPri(NULL, 0);
 
     // halt
