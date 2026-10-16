@@ -50,6 +50,7 @@ u8 gWarpTransGreen = 0;
 u8 gWarpTransBlue = 0;
 s16 gCurrSaveFileNum = 1;
 s16 gCurrLevelNum = LEVEL_MIN;
+u16 gCurrGameSkip = 0; // AlterAlo note: New variable to quickly skip game intros
 
 /*
  * The following two tables are used in get_mario_spawn_type() to determine spawn type

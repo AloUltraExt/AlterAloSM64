@@ -267,6 +267,10 @@ void load_level_init_text(u32 arg) {
             break;
     }
 
+    if (gCurrGameSkip & GAME_SKIP_LEVEL_TEXT) {
+        gotAchievement = TRUE;
+    }
+
     if (!gotAchievement) {
         level_set_transition(-1, NULL);
         create_dialog_box(dialogID);
@@ -1153,7 +1157,7 @@ s32 update_level(void) {
 }
 
 s32 init_level(void) {
-    s32 val4 = FALSE;
+    s32 fadeFromColor = FALSE;
 
     set_play_mode(PLAY_MODE_NORMAL);
 
@@ -1182,17 +1186,17 @@ s32 init_level(void) {
                 set_mario_action(gMarioState, ACT_IDLE, 0);
             } else if (!gDebugLevelSelect) {
                 if (gMarioState->action != ACT_UNINITIALIZED) {
-                    if (save_file_exists(gCurrSaveFileNum - 1)) {
+                    if (save_file_exists(gCurrSaveFileNum - 1) || (gCurrGameSkip & GAME_SKIP_INTRO_SCENE)) {
                         set_mario_action(gMarioState, ACT_IDLE, 0);
                     } else {
                         set_mario_action(gMarioState, ACT_INTRO_CUTSCENE, 0);
-                        val4 = TRUE;
+                        fadeFromColor = TRUE;
                     }
                 }
             }
         }
 
-        if (val4) {
+        if (fadeFromColor) {
             play_transition(WARP_TRANSITION_FADE_FROM_COLOR, 0x5A, 0xFF, 0xFF, 0xFF);
         } else {
             play_transition(WARP_TRANSITION_FADE_FROM_STAR, 0x10, 0xFF, 0xFF, 0xFF);
@@ -1253,7 +1257,7 @@ s32 lvl_init_from_save_file(UNUSED s16 arg0, s32 levelNum) {
 #endif
     sWarpDest.type = WARP_TYPE_NOT_WARPING;
     sDelayedWarpOp = WARP_OP_NONE;
-    gNeverEnteredCastle = !save_file_exists(gCurrSaveFileNum - 1);
+    gNeverEnteredCastle = !(save_file_exists(gCurrSaveFileNum - 1) || (gCurrGameSkip & GAME_SKIP_INTRO_SCENE));
 
     gCurrLevelNum = levelNum;
     gCurrCourseNum = COURSE_NONE;

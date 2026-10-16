@@ -152,6 +152,10 @@ s16 intro_level_select(void) {
 s32 intro_regular(void) {
     s32 level = LEVEL_NONE;
 
+    if (gCurrGameSkip & GAME_SKIP_GODDARD) {
+        return (100 + gDebugLevelSelect);
+    }
+
 #ifndef VERSION_JP
     // When the game stars, gGlobalTimer is less than 129 frames,
     // so Mario greets the player. After that, he will always say
@@ -191,6 +195,10 @@ s32 intro_regular(void) {
 s32 intro_game_over(void) {
     s32 level = LEVEL_NONE;
 
+    if (gCurrGameSkip & GAME_SKIP_GODDARD) {
+        return (100 + gDebugLevelSelect);
+    }
+
 #ifndef VERSION_JP
     if (sPlayMarioGameOver == TRUE) {
         play_sound(SOUND_MARIO_GAME_OVER, gGlobalSoundSource);
@@ -229,21 +237,34 @@ s32 intro_play_its_a_me_mario(void) {
  * Returns a level ID after their criteria is met.
  */
 s32 lvl_intro_update(s16 arg, UNUSED s32 unusedArg) {
-    s32 retVar;
+    // AlterAlo note: Key combo for debug level select
+    if (gPlayer1Controller->buttonDown == (L_TRIG | R_TRIG) && arg == LVL_INTRO_REGULAR) {
+        gDebugLevelSelect = TRUE;
+    }
+
+    if (!gDebugLevelSelect) {
+        if (gCurrGameSkip & GAME_SKIP_FILE_SELECT) {
+            gCurrSaveFileNum = 4;
+        }
+        if (gCurrGameSkip & GAME_SKIP_STAR_SELECT) {
+            gCurrActNum = 6;
+        }
+    }
 
     switch (arg) {
         case LVL_INTRO_PLAY_ITS_A_ME_MARIO:
-            retVar = intro_play_its_a_me_mario();
+            return intro_play_its_a_me_mario();
             break;
         case LVL_INTRO_REGULAR:
-            retVar = intro_regular();
+            return intro_regular();
             break;
         case LVL_INTRO_GAME_OVER:
-            retVar = intro_game_over();
+            return intro_game_over();
             break;
         case LVL_INTRO_LEVEL_SELECT:
-            retVar = intro_level_select();
+            return intro_level_select();
             break;
+        default:
+            return LEVEL_NONE;
     }
-    return retVar;
 }

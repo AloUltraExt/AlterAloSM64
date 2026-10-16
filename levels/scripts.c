@@ -153,7 +153,7 @@ static const LevelScript script_L5[] = {
 #define DEFINE_LEVEL(_0, levelenum, _2, folder, _4, _5, _6, _7, _8, _9, _10) JUMP_IF(OP_EQ, levelenum, script_exec_ ## folder),
 
 static const LevelScript script_exec_level_table[] = {
-    GET_OR_SET(/*op*/ OP_GET, /*var*/ VAR_CURR_LEVEL_NUM),
+    GET_OR_SET(/*op*/ OP_GET, /*var*/ LVL_VAR_LEVEL_NUM),
     #include "levels/level_defines.h"
     EXIT(),
 };

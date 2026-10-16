@@ -127,6 +127,15 @@ enum MenuOption {
     MENU_OPT_CONTINUE_DONT_SAVE = MENU_OPT_3
 };
 
+#define GAME_SKIP_TITLE_SCREEN  (1 << 0)
+#define GAME_SKIP_GODDARD       (1 << 1)
+#define GAME_SKIP_FILE_SELECT   (1 << 2)
+#define GAME_SKIP_INTRO_SCENE   (1 << 3)
+#define GAME_SKIP_STAR_SELECT   (1 << 4)
+#define GAME_SKIP_LEVEL_TEXT    (1 << 5)
+
+#define GAME_SKIP_GENERAL       (GAME_SKIP_TITLE_SCREEN | GAME_SKIP_GODDARD | GAME_SKIP_FILE_SELECT | GAME_SKIP_INTRO_SCENE)
+
 extern struct GraphNode **gLoadedGraphNodes;
 extern struct SpawnInfo gPlayerSpawnInfos[];
 extern struct GraphNode *D_8033A160[];
@@ -146,7 +155,7 @@ extern struct Area *gCurrentArea;
 
 extern s16 gCurrSaveFileNum;
 extern s16 gCurrLevelNum;
-
+extern u16 gCurrGameSkip;
 
 void override_viewport_and_clip(Vp *a, Vp *b, u8 c, u8 d, u8 e);
 void print_intro_text(void);

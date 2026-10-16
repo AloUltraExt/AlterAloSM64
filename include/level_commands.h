@@ -17,11 +17,14 @@
 #define OP_SET   0
 #define OP_GET   1
 
-#define VAR_CURR_SAVE_FILE_NUM  0
-#define VAR_CURR_COURSE_NUM     1
-#define VAR_CURR_ACT_NUM        2
-#define VAR_CURR_LEVEL_NUM      3
-#define VAR_CURR_AREA_INDEX     4
+enum LevelCmdGetOrSetVarIds {
+    LVL_VAR_SAVE_FILE_NUM,
+    LVL_VAR_COURSE_NUM,
+    LVL_VAR_ACT_NUM,
+    LVL_VAR_LEVEL_NUM,
+    LVL_VAR_AREA_INDEX,
+    LVL_VAR_GAME_SKIP
+};
 
 #define WARP_CHECKPOINT 0x80
 #define WARP_NO_CHECKPOINT 0x00

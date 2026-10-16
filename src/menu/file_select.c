@@ -3107,6 +3107,14 @@ static void print_file_select_strings(void) {
     if (sMainMenuTimer < 1000) {
         sMainMenuTimer++;
     }
+
+    // AlterAlo note: Key combo to skip intro cutscene
+    if ((gPlayer1Controller->buttonDown == (L_TRIG | R_TRIG)) && sCurrentMenuLevel == MENU_LAYER_MAIN) {
+        if (!(gCurrGameSkip & GAME_SKIP_INTRO_SCENE)) {
+            play_sound(SOUND_MENU_STAR_SOUND, gGlobalSoundSource);
+            gCurrGameSkip |= GAME_SKIP_INTRO_SCENE;
+        }
+    }
 }
 
 /**
@@ -3176,10 +3184,7 @@ s32 lvl_init_menu_values_and_cursor_pos(UNUSED s32 arg, UNUSED s32 unused) {
         }
     }
 #endif
-    //! no return value
-#ifdef AVOID_UB
     return 0;
-#endif
 }
 
 /**
