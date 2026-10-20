@@ -221,8 +221,8 @@ endif
 # Process libraries
 LIBS :=
 AR_LIBS :=
-include mk/lib/libultra.mk
 include mk/lib/libgoddard.mk
+include mk/lib/libultra.mk
 include mk/lib/libgcc.mk
 LINK_LIBS := $(foreach i,$(LIBS),-l$(i))
 

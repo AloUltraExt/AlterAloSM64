@@ -53,34 +53,6 @@ u32 gNumVblanks = 0;
 s8 gResetTimer = 0;
 s8 gNmiResetBarsTimer = 0;
 
-void unknown_main_func(void) {
-    // uninitialized
-    OSTime time;
-    u32 b;
-#ifdef AVOID_UB
-    time = 0;
-    b = 0;
-#endif
-
-    osSetTime(time);
-    osMapTLB(0, b, NULL, 0, 0, 0);
-    osUnmapTLBAll();
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wnonnull"
-    sprintf(NULL, NULL);
-#pragma GCC diagnostic pop
-}
-
-void stub_main_1(void) {
-}
-
-void stub_main_2(void) {
-}
-
-void stub_main_3(void) {
-}
-
 void setup_mesg_queues(void) {
     osCreateMesgQueue(&gDmaMesgQueue, gDmaMesgBuf, ARRAY_COUNT(gDmaMesgBuf));
     osCreateMesgQueue(&gSIEventMesgQueue, gSIEventMesgBuf, ARRAY_COUNT(gSIEventMesgBuf));
@@ -186,19 +158,10 @@ void pretend_audio_sptask_done(void) {
 }
 
 void handle_vblank(void) {
-    UNUSED u8 filler[4];
-
-    stub_main_3();
     gNumVblanks++;
-#if defined(VERSION_SH) || defined(VERSION_CN)
     if (gResetTimer > 0 && gResetTimer < 100) {
         gResetTimer++;
     }
-#else
-    if (gResetTimer > 0) {
-        gResetTimer++;
-    }
-#endif
 
     receive_new_tasks();
 
@@ -328,7 +291,6 @@ void thread3_main(UNUSED void *arg) {
                 handle_nmi_request();
                 break;
         }
-        stub_main_2();
     }
 }
 
@@ -389,22 +351,18 @@ extern void crash_screen_init(void);
  * Initialize hardware, start main thread, then idle.
  */
 void thread1_idle(UNUSED void *arg) {
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
-    s32 sp24 = osTvType;
-#endif
-
     osCreateViManager(OS_PRIORITY_VIMGR);
-#if defined(VERSION_US) || defined(VERSION_SH) || defined(VERSION_CN)
-    if (sp24 == OS_TV_NTSC) {
-        osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
-    } else {
-        osViSetMode(&osViModeTable[OS_VI_PAL_LAN1]);
+	switch (osTvType) {
+        case OS_TV_NTSC:
+            osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
+            break;
+        case OS_TV_MPAL:
+            osViSetMode(&osViModeTable[OS_VI_MPAL_LAN1]);
+            break;
+        case OS_TV_PAL:
+            osViSetMode(&osViModeTable[OS_VI_PAL_LAN1]);
+            break;
     }
-#elif defined(VERSION_JP)
-    osViSetMode(&osViModeTable[OS_VI_NTSC_LAN1]);
-#else // VERSION_EU
-    osViSetMode(&osViModeTable[OS_VI_PAL_LAN1]);
-#endif
     osViBlack(TRUE);
     osViSetSpecialFeatures(OS_VI_DITHER_FILTER_ON);
     osViSetSpecialFeatures(OS_VI_GAMMA_OFF);
@@ -421,10 +379,8 @@ void thread1_idle(UNUSED void *arg) {
 }
 
 void main_func(void) {
-    UNUSED u8 filler[64];
-
     osInitialize();
-    stub_main_1();
+
     create_thread(&gIdleThread, 1, thread1_idle, NULL, gIdleThreadStack + 0x800, 100);
     osStartThread(&gIdleThread);
 }
