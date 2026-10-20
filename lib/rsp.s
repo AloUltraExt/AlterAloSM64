@@ -10,12 +10,7 @@ glabel rspF3DBootStart
 glabel rspF3DBootEnd
 
 .balign 16
-#ifndef F3DEX_GBI_SHARED
-glabel rspF3DStart /* Use regular Fast3D bins (default) */
-    .incbin "rsp/fast3d.bin"
-glabel rspF3DEnd
-
-#else /* Use one of the Fast3DEX series grucodes. */
+#ifdef F3DEX_GBI_SHARED /* Use one of the Fast3DEX series grucodes. */
 glabel rspF3DStart
     #ifdef F3DZEX_GBI_2
         .incbin "lib/PR/f3dex2/F3DZEX_NoN.bin"
@@ -125,12 +120,7 @@ glabel rspS2DEXEnd
 .section .rodata
 
 .balign 16
-#ifndef F3DEX_GBI_SHARED /* Use regular Fast3D data (default) */
-glabel rspF3DDataStart
-    .incbin "rsp/fast3d_data.bin"
-glabel rspF3DDataEnd
-
-#else /* Using one of the Fast3DEX series grucodes */
+#ifdef F3DEX_GBI_SHARED /* Using one of the Fast3DEX series grucodes */
 glabel rspF3DDataStart
     #ifdef F3DZEX_GBI_2
         .incbin "lib/PR/f3dex2/F3DZEX_NoN_data.bin"
