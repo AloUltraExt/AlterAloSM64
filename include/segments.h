@@ -32,7 +32,7 @@
  * importing large custom content.
  */
 
-#define SEG_POOL_START   _framebuffersSegmentNoloadEnd // 0x0165000 in size
+#define SEG_POOL_START   _framebuffersSegmentBssEnd
 
 #define POOL_SIZE        RAM_END - SEG_POOL_START
 
