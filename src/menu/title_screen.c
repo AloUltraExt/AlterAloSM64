@@ -5,7 +5,6 @@
 #include "game/area.h"
 #include "game/game_init.h"
 #include "game/level_update.h"
-#include "game/main.h"
 #include "game/memory.h"
 #include "game/print.h"
 #include "game/save_file.h"

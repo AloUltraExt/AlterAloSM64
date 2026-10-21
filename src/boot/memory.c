@@ -3,15 +3,13 @@
 #include "sm64.h"
 
 #define INCLUDED_FROM_MEMORY_C
-
-#include "buffers/zbuffer.h"
-#include "buffers/buffers.h"
-#include "decompress.h"
-#include "game_init.h"
-#include "main.h"
-#include "memory.h"
 #include "segments.h"
 #include "segment_symbols.h"
+#include "buffers/buffers.h"
+#include "game/decompress.h"
+#include "game/game_init.h"
+#include "game/main.h"
+#include "game/memory.h"
 
 // round up to the next multiple
 #define ALIGN4(val) (((val) + 0x3) & ~0x3)
@@ -362,12 +360,19 @@ void *load_segment_decompress_heap(u32 segment, u8 *srcStart, u8 *srcEnd) {
     return gDecompressionHeap;
 }
 
+/**
+ * Loads the engine segment defined in the linker.
+ * Cleans up the main segment to ensure we don't load undefined code.
+ * In addition we also clean up it's BSS segment so we don't load undefined values.
+ */
 void load_engine_code_segment(void) {
     void *startAddr = (void *) _engineSegmentStart;
     u32 totalSize = _engineSegmentEnd - _engineSegmentStart;
-    UNUSED u32 alignedSize = ALIGN16(_engineSegmentRomEnd - _engineSegmentRomStart);
+    void *startBssAddr = (void *) _engineSegmentBssStart;
+    u32 totalBssSize = _engineSegmentBssEnd - _engineSegmentBssStart;
 
     bzero(startAddr, totalSize);
+    bzero(startBssAddr, totalBssSize);
     osWritebackDCacheAll();
     dma_read(startAddr, _engineSegmentRomStart, _engineSegmentRomEnd);
     osInvalICache(startAddr, totalSize);

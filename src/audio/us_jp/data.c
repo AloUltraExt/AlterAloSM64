@@ -369,7 +369,6 @@ f32 gVolRampingRhs128[128] = {
 };
 
 s16 gTatumsPerBeat = TATUMS_PER_BEAT;
-s8 gUnusedCount80333EE8 = UNUSED_COUNT_80333EE8;
 s32 gAudioHeapSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_HEAP_SIZE);
 s32 gAudioInitPoolSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_INIT_POOL_SIZE);
 volatile s32 gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
@@ -398,5 +397,3 @@ u32 gUnused80226E58[0x10];
 u16 gUnused80226E98[0x10];
 
 u32 gAudioRandom;
-
-u64 gAudioGlobalsEndMarker;

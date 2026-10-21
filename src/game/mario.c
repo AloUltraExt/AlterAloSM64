@@ -13,7 +13,6 @@
 #include "interaction.h"
 #include "level_table.h"
 #include "level_update.h"
-#include "main.h"
 #include "mario.h"
 #include "mario_actions_airborne.h"
 #include "mario_actions_automatic.h"

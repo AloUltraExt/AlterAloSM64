@@ -64,13 +64,9 @@ extern s16 *gAiBuffers[NUMAIBUFFERS];
 extern s16 gAiBufferLengths[NUMAIBUFFERS];
 #define AIBUFFER_LEN (0xa0 * 16)
 
-extern u32 gUnused80226E58[0x10];
-extern u16 gUnused80226E98[0x10];
-
 extern u32 gAudioRandom;
 extern s32 gAudioErrorFlags;
 
-#define UNUSED_COUNT_80333EE8 16
 #define AUDIO_HEAP_SIZE 0x31150
 #define AUDIO_INIT_POOL_SIZE 0x2500
 

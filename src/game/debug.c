@@ -5,7 +5,6 @@
 #include "engine/behavior_script.h"
 #include "engine/surface_collision.h"
 #include "game_init.h"
-#include "main.h"
 #include "object_constants.h"
 #include "object_fields.h"
 #include "object_helpers.h"

@@ -98,25 +98,31 @@ SECTIONS
     BEGIN_NOLOAD(buffers)
     {
         BUILD_DIR/src/buffers/buffers.o(.bss*);
-#if defined(VERSION_SH) || defined(VERSION_CN)
-        AUDIO_DIR/port.o(.bss*);
-#endif
-        AUDIO_DIR/globals_start.o(.bss*);
-        AUDIO_DIR/synthesis.o(.bss*);
-        AUDIO_DIR/heap.o(.bss*);
-        AUDIO_DIR/load.o(.bss*);
-        AUDIO_DIR/data.o(.bss*);
-        AUDIO_DIR*.o(.bss*);
-
+        . = ALIGN(0x10);
         BUILD_DIR/src/buffers/gfx_output_buffer.o(.bss*);
     }
     END_NOLOAD(buffers)
-   . = _buffersSegmentBssEnd;
+
+    . = _buffersSegmentBssEnd;
+
+    // The way audio segment BSS is cleared in vanilla is weird.
+    // They used "start and end markers" defined on specific audio files and those
+    // get cleaned using a weird for loop that could break if you move it's order.
+    // Now we move it into it's own segment to clean those properly using bzero.
+    BEGIN_NOLOAD(audio)
+    {
+        BUILD_DIR/src/audio/external.o(.bss*);
+        AUDIO_DIR*.o(.bss*);
+        . = ALIGN(0x10);
+    }
+    END_NOLOAD(audio)
+
+    . = _audioSegmentBssEnd;
+
     BEGIN_SEG(main, .)
     {
         BUILD_DIR/asm/entry.o(.text);
-        BUILD_DIR/asm/decompress.o(.text);
-        BUILD_DIR/src/game*.o(.text);
+        BUILD_DIR/src/boot*.o(.text);
         BUILD_DIR/src/audio/external.o(.text);
         AUDIO_DIR*.o(.text);
         BUILD_DIR/libultra.a:*.o(.text);
@@ -124,8 +130,7 @@ SECTIONS
         BUILD_DIR/lib/rsp.o(.text);
 
         BUILD_DIR/asm/entry.o(.data*);
-        BUILD_DIR/asm/decompress.o(.data*);
-        BUILD_DIR/src/game*.o(.data*);
+        BUILD_DIR/src/boot*.o(.data*);
         BUILD_DIR/src/audio/external.o(.data*);
         AUDIO_DIR*.o(.data*);
         BUILD_DIR/libultra.a:*.o(.data*);
@@ -133,8 +138,7 @@ SECTIONS
         BUILD_DIR/lib/rsp.o(.data*);
 
         BUILD_DIR/asm/entry.o(.rodata*);
-        BUILD_DIR/asm/decompress.o(.rodata*);
-        BUILD_DIR/src/game*.o(.rodata*);
+        BUILD_DIR/src/boot*.o(.rodata*);
         BUILD_DIR/src/audio/external.o(.rodata*);
         AUDIO_DIR*.o(.rodata*);
         BUILD_DIR/libultra.a:*.o(.rodata*);
@@ -147,12 +151,9 @@ SECTIONS
     #endif
     BEGIN_NOLOAD(main)
     {
-        BUILD_DIR/src/game*.o(.bss*);
-        BUILD_DIR/src/audio/external.o(.bss*);
-        AUDIO_DIR*.o(.bss*);
+        BUILD_DIR/src/boot*.o(.bss*);
         BUILD_DIR/libultra.a:*.o(.bss*);
-
-        . = ALIGN(0x8);
+        . = ALIGN(0x10);
     }
     END_NOLOAD(main)
 
@@ -160,15 +161,22 @@ SECTIONS
 
     BEGIN_SEG(engine, .)
     {
+        BUILD_DIR/src/game*.o(.text);
         BUILD_DIR/src/engine*.o(.text);
+
+        BUILD_DIR/src/game*.o(.data*);
         BUILD_DIR/src/engine*.o(.data*);
+
+        BUILD_DIR/src/game*.o(.rodata*);
         BUILD_DIR/src/engine*.o(.rodata*);
-        . = ALIGN(0x100);
+        . = ALIGN(0x10);
     }
     END_SEG(engine)
     BEGIN_NOLOAD(engine)
     {
+        BUILD_DIR/src/game*.o(.*bss*);
         BUILD_DIR/src/engine*.o(.bss*);
+        . = ALIGN(0x40);
     }
     END_NOLOAD(engine)
 
@@ -176,7 +184,6 @@ SECTIONS
     BEGIN_NOLOAD(framebuffers)
     {
         BUILD_DIR/src/buffers/framebuffers.o(.bss*);
-        . = ALIGN(0x100);
     }
     END_NOLOAD(framebuffers)
 

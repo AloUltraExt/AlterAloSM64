@@ -5,6 +5,7 @@
 #include "heap.h"
 #include "load.h"
 #include "seqplayer.h"
+#include "segment_symbols.h"
 
 #define ALIGN16(val) (((val) + 0xF) & ~0xF)
 
@@ -71,9 +72,6 @@ s16 gTempoInternalToExternal;
 s8 gAudioUpdatesPerFrame;
 
 s8 gSoundMode;
-
-extern u64 gAudioGlobalsStartMarker;
-extern u64 gAudioGlobalsEndMarker;
 
 extern u8 gSoundDataADSR[]; // sound_data.ctl
 extern u8 gSoundDataRaw[];  // sound_data.tbl
@@ -704,8 +702,7 @@ void load_sequence_internal(u32 player, u32 seqId, s32 loadAsync) {
 void audio_init() {
     UNUSED s8 pad[32];
     u8 buf[0x10];
-    s32 i, j, k;
-    s32 lim1, lim2, lim3;
+    s32 i, j;
     u32 size;
     UNUSED u64 *ptr64;
     void *data;
@@ -713,34 +710,19 @@ void audio_init() {
 
     gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
 
-    lim1 = gUnusedCount80333EE8;
-    for (i = 0; i < lim1; i++) {
-        gUnused80226E58[i] = 0;
-        gUnused80226E98[i] = 0;
-    }
-
-    lim2 = gAudioHeapSize;
-    for (i = 0; i <= lim2 / 8 - 1; i++) {
-        ((u64 *) gAudioHeap)[i] = 0;
-    }
+    bzero(&gAudioHeap, gAudioHeapSize);
 
 #ifdef TARGET_N64
-    // It seems boot.s doesn't clear the .bss area for audio, so do it here.
-    i = 0;
-    lim3 = ((uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker) / 8;
-    ptr64 = &gAudioGlobalsStartMarker - 1;
-    for (k = lim3; k >= 0; k--) {
-        i++;
-        ptr64[i] = 0;
-    }
+    // Audio segment BSS is located differently, so clear it here
+    bzero((void *) _audioSegmentBssStart, (uintptr_t) _audioSegmentBssEnd - (uintptr_t) _audioSegmentBssStart);
 #endif
 
 #ifdef TARGET_N64
     eu_stubbed_printf_3(
         "Clear Workarea %x -%x size %x \n",
-        (uintptr_t) &gAudioGlobalsStartMarker,
-        (uintptr_t) &gAudioGlobalsEndMarker,
-        (uintptr_t) &gAudioGlobalsEndMarker - (uintptr_t) &gAudioGlobalsStartMarker
+        (uintptr_t) _audioSegmentBssStart,
+        (uintptr_t) _audioSegmentBssEnd,
+        (uintptr_t) _audioSegmentBssEnd - (uintptr_t) _audioSegmentBssStart
     );
 #endif
 

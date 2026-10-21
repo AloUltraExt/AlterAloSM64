@@ -348,7 +348,6 @@ f32 gDefaultPanVolume[128] = {
 };
 
 s16 gTatumsPerBeat = TATUMS_PER_BEAT;
-s8 gUnusedCount80333EE8 = UNUSED_COUNT_80333EE8;
 s32 gAudioHeapSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_HEAP_SIZE);
 s32 gAudioInitPoolSize = DOUBLE_SIZE_ON_64_BIT(AUDIO_INIT_POOL_SIZE);
 volatile s32 gAudioLoadLock = AUDIO_LOCK_UNINITIALIZED;
@@ -386,5 +385,3 @@ s16 gAiBufferLengths[NUMAIBUFFERS];
 u32 gAudioRandom;
 
 s32 gAudioErrorFlags;
-
-u64 gAudioGlobalsEndMarker;

@@ -2,16 +2,16 @@
 #include <stdio.h>
 
 #include "sm64.h"
-#include "audio/external.h"
-#include "game_init.h"
-#include "memory.h"
-#include "sound_init.h"
-#include "profiler.h"
-#include "buffers/buffers.h"
 #include "segments.h"
 #include "segment_symbols.h"
-#include "main.h"
-#include "rumble_init.h"
+#include "audio/external.h"
+#include "buffers/buffers.h"
+#include "game/game_init.h"
+#include "game/main.h"
+#include "game/memory.h"
+#include "game/sound_init.h"
+#include "game/profiler.h"
+#include "game/rumble_init.h"
 
 // Message IDs
 #define MESG_SP_COMPLETE 100
