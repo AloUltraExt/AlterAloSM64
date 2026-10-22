@@ -612,657 +612,657 @@ UNUSED static const u64 menu_unused_0 = 0;
 
 // 0x0700AC48
 ALIGNED8 static const Texture texture_menu_font_char_jp_0[] = {
-#include "levels/menu/main_menu_seg7.0AC48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AC48.ia8.inc.c"
 };
 
 // 0x0700AC88
 ALIGNED8 static const Texture texture_menu_font_char_jp_1[] = {
-#include "levels/menu/main_menu_seg7.0AC88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AC88.ia8.inc.c"
 };
 
 // 0x0700ACC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_2[] = {
-#include "levels/menu/main_menu_seg7.0ACC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0ACC8.ia8.inc.c"
 };
 
 // 0x0700AD08
 ALIGNED8 static const Texture texture_menu_font_char_jp_3[] = {
-#include "levels/menu/main_menu_seg7.0AD08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AD08.ia8.inc.c"
 };
 
 // 0x0700AD48
 ALIGNED8 static const Texture texture_menu_font_char_jp_4[] = {
-#include "levels/menu/main_menu_seg7.0AD48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AD48.ia8.inc.c"
 };
 
 // 0x0700AD88
 ALIGNED8 static const Texture texture_menu_font_char_jp_5[] = {
-#include "levels/menu/main_menu_seg7.0AD88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AD88.ia8.inc.c"
 };
 
 // 0x0700ADC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_6[] = {
-#include "levels/menu/main_menu_seg7.0ADC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0ADC8.ia8.inc.c"
 };
 
 // 0x0700AE08
 ALIGNED8 static const Texture texture_menu_font_char_jp_7[] = {
-#include "levels/menu/main_menu_seg7.0AE08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AE08.ia8.inc.c"
 };
 
 // 0x0700AE48
 ALIGNED8 static const Texture texture_menu_font_char_jp_8[] = {
-#include "levels/menu/main_menu_seg7.0AE48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AE48.ia8.inc.c"
 };
 
 // 0x0700AE88
 ALIGNED8 static const Texture texture_menu_font_char_jp_9[] = {
-#include "levels/menu/main_menu_seg7.0AE88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AE88.ia8.inc.c"
 };
 
 // 0x0700AEC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_a[] = {
-#include "levels/menu/main_menu_seg7.0AEC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AEC8.ia8.inc.c"
 };
 
 // 0x0700AF08
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_i[] = {
-#include "levels/menu/main_menu_seg7.0AF08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AF08.ia8.inc.c"
 };
 
 // 0x0700AF48
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_u[] = {
-#include "levels/menu/main_menu_seg7.0AF48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AF48.ia8.inc.c"
 };
 
 // 0x0700AF88
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_c[] = {
-#include "levels/menu/main_menu_seg7.0AF88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AF88.ia8.inc.c"
 };
 
 // 0x0700AFC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_o[] = {
-#include "levels/menu/main_menu_seg7.0AFC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0AFC8.ia8.inc.c"
 };
 
 // 0x0700B008
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ka[] = {
-#include "levels/menu/main_menu_seg7.0B008.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B008.ia8.inc.c"
 };
 
 // 0x0700B048
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ki[] = {
-#include "levels/menu/main_menu_seg7.0B048.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B048.ia8.inc.c"
 };
 
 // 0x0700B088
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ku[] = {
-#include "levels/menu/main_menu_seg7.0B088.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B088.ia8.inc.c"
 };
 
 // 0x0700B0C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ke[] = {
-#include "levels/menu/main_menu_seg7.0B0C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B0C8.ia8.inc.c"
 };
 
 // 0x0700B108
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ko[] = {
-#include "levels/menu/main_menu_seg7.0B108.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B108.ia8.inc.c"
 };
 
 // 0x0700B148
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_sa[] = {
-#include "levels/menu/main_menu_seg7.0B148.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B148.ia8.inc.c"
 };
 
 // 0x0700B188
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_shi[] = {
-#include "levels/menu/main_menu_seg7.0B188.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B188.ia8.inc.c"
 };
 
 // 0x0700B1C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_su[] = {
-#include "levels/menu/main_menu_seg7.0B1C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B1C8.ia8.inc.c"
 };
 
 // 0x0700B208
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_se[] = {
-#include "levels/menu/main_menu_seg7.0B208.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B208.ia8.inc.c"
 };
 
 // 0x0700B248
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_so[] = {
-#include "levels/menu/main_menu_seg7.0B248.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B248.ia8.inc.c"
 };
 
 // 0x0700B288
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ta[] = {
-#include "levels/menu/main_menu_seg7.0B288.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B288.ia8.inc.c"
 };
 
 // 0x0700B2C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_chi[] = {
-#include "levels/menu/main_menu_seg7.0B2C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B2C8.ia8.inc.c"
 };
 
 // 0x0700B308
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_tsu[] = {
-#include "levels/menu/main_menu_seg7.0B308.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B308.ia8.inc.c"
 };
 
 // 0x0700B348
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_te[] = {
-#include "levels/menu/main_menu_seg7.0B348.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B348.ia8.inc.c"
 };
 
 // 0x0700B388
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_to[] = {
-#include "levels/menu/main_menu_seg7.0B388.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B388.ia8.inc.c"
 };
 
 // 0x0700B3C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_na[] = {
-#include "levels/menu/main_menu_seg7.0B3C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B3C8.ia8.inc.c"
 };
 
 // 0x0700B408
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ni[] = {
-#include "levels/menu/main_menu_seg7.0B408.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B408.ia8.inc.c"
 };
 
 // 0x0700B448
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_nu[] = {
-#include "levels/menu/main_menu_seg7.0B448.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B448.ia8.inc.c"
 };
 
 // 0x0700B488
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ne[] = {
-#include "levels/menu/main_menu_seg7.0B488.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B488.ia8.inc.c"
 };
 
 // 0x0700B4C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_no[] = {
-#include "levels/menu/main_menu_seg7.0B4C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B4C8.ia8.inc.c"
 };
 
 // 0x0700B508
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ha[] = {
-#include "levels/menu/main_menu_seg7.0B508.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B508.ia8.inc.c"
 };
 
 // 0x0700B548
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_hi[] = {
-#include "levels/menu/main_menu_seg7.0B548.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B548.ia8.inc.c"
 };
 
 // 0x0700B588
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_hu[] = {
-#include "levels/menu/main_menu_seg7.0B588.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B588.ia8.inc.c"
 };
 
 // 0x0700B5C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_he[] = {
-#include "levels/menu/main_menu_seg7.0B5C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B5C8.ia8.inc.c"
 };
 
 // 0x0700B608
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ho[] = {
-#include "levels/menu/main_menu_seg7.0B608.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B608.ia8.inc.c"
 };
 
 // 0x0700B648
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ma[] = {
-#include "levels/menu/main_menu_seg7.0B648.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B648.ia8.inc.c"
 };
 
 // 0x0700B688
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_mi[] = {
-#include "levels/menu/main_menu_seg7.0B688.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B688.ia8.inc.c"
 };
 
 // 0x0700B6C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_mu[] = {
-#include "levels/menu/main_menu_seg7.0B6C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B6C8.ia8.inc.c"
 };
 
 // 0x0700B708
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_me[] = {
-#include "levels/menu/main_menu_seg7.0B708.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B708.ia8.inc.c"
 };
 
 // 0x0700B748
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_mo[] = {
-#include "levels/menu/main_menu_seg7.0B748.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B748.ia8.inc.c"
 };
 
 // 0x0700B788
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ya[] = {
-#include "levels/menu/main_menu_seg7.0B788.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B788.ia8.inc.c"
 };
 
 // 0x0700B7C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_yu[] = {
-#include "levels/menu/main_menu_seg7.0B7C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B7C8.ia8.inc.c"
 };
 
 // 0x0700B808
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_yo[] = {
-#include "levels/menu/main_menu_seg7.0B808.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B808.ia8.inc.c"
 };
 
 // 0x0700B848
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ra[] = {
-#include "levels/menu/main_menu_seg7.0B848.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B848.ia8.inc.c"
 };
 
 // 0x0700B888
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ri[] = {
-#include "levels/menu/main_menu_seg7.0B888.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B888.ia8.inc.c"
 };
 
 // 0x0700B8C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ru[] = {
-#include "levels/menu/main_menu_seg7.0B8C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B8C8.ia8.inc.c"
 };
 
 // 0x0700B908
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_re[] = {
-#include "levels/menu/main_menu_seg7.0B908.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B908.ia8.inc.c"
 };
 
 // 0x0700B948
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_ro[] = {
-#include "levels/menu/main_menu_seg7.0B948.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B948.ia8.inc.c"
 };
 
 // 0x0700B988
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_wa[] = {
-#include "levels/menu/main_menu_seg7.0B988.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B988.ia8.inc.c"
 };
 
 // 0x0700B9C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_wo[] = {
-#include "levels/menu/main_menu_seg7.0B9C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0B9C8.ia8.inc.c"
 };
 
 // 0x0700BA08
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_n[] = {
-#include "levels/menu/main_menu_seg7.0BA08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BA08.ia8.inc.c"
 };
 
 // 0x0700BA48
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_a[] = {
-#include "levels/menu/main_menu_seg7.0BA48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BA48.ia8.inc.c"
 };
 
 // 0x0700BA88
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_i[] = {
-#include "levels/menu/main_menu_seg7.0BA88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BA88.ia8.inc.c"
 };
 
 // 0x0700BAC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_u[] = {
-#include "levels/menu/main_menu_seg7.0BAC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BAC8.ia8.inc.c"
 };
 
 // 0x0700BB08
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_e[] = {
-#include "levels/menu/main_menu_seg7.0BB08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BB08.ia8.inc.c"
 };
 
 // 0x0700BB48
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_o[] = {
-#include "levels/menu/main_menu_seg7.0BB48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BB48.ia8.inc.c"
 };
 
 // 0x0700BB88
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_ka[] = {
-#include "levels/menu/main_menu_seg7.0BB88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BB88.ia8.inc.c"
 };
 
 // 0x0700BBC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_yu[] = {
-#include "levels/menu/main_menu_seg7.0BBC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BBC8.ia8.inc.c"
 };
 
 // 0x0700BC08
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_yo[] = {
-#include "levels/menu/main_menu_seg7.0BC08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BC08.ia8.inc.c"
 };
 
 // 0x0700BC48
 ALIGNED8 static const Texture texture_menu_font_char_jp_hiragana_small_tsu[] = {
-#include "levels/menu/main_menu_seg7.0BC48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BC48.ia8.inc.c"
 };
 
 // 0x0700BC88
 ALIGNED8 static const Texture texture_menu_font_char_jp_handakuten[] = {
-#include "levels/menu/main_menu_seg7.0BC88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BC88.ia8.inc.c"
 };
 
 // 0x0700BCC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_dakuten[] = {
-#include "levels/menu/main_menu_seg7.0BCC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BCC8.ia8.inc.c"
 };
 
 // 0x0700BD08
 ALIGNED8 static const Texture texture_menu_font_char_jp_long_vowel[] = {
-#include "levels/menu/main_menu_seg7.0BD08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BD08.ia8.inc.c"
 };
 
 // 0x0700BD48
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_a[] = {
-#include "levels/menu/main_menu_seg7.0BD48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BD48.ia8.inc.c"
 };
 
 // 0x0700BD88
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_i[] = {
-#include "levels/menu/main_menu_seg7.0BD88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BD88.ia8.inc.c"
 };
 
 // 0x0700BDC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_u[] = {
-#include "levels/menu/main_menu_seg7.0BDC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BDC8.ia8.inc.c"
 };
 
 // 0x0700BE08
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_e[] = {
-#include "levels/menu/main_menu_seg7.0BE08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BE08.ia8.inc.c"
 };
 
 // 0x0700BE48
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_o[] = {
-#include "levels/menu/main_menu_seg7.0BE48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BE48.ia8.inc.c"
 };
 
 // 0x0700BE88
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ka[] = {
-#include "levels/menu/main_menu_seg7.0BE88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BE88.ia8.inc.c"
 };
 
 // 0x0700BEC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ki[] = {
-#include "levels/menu/main_menu_seg7.0BEC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BEC8.ia8.inc.c"
 };
 
 // 0x0700BF08
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ku[] = {
-#include "levels/menu/main_menu_seg7.0BF08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BF08.ia8.inc.c"
 };
 
 // 0x0700BF48
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ke[] = {
-#include "levels/menu/main_menu_seg7.0BF48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BF48.ia8.inc.c"
 };
 
 // 0x0700BF88
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ko[] = {
-#include "levels/menu/main_menu_seg7.0BF88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BF88.ia8.inc.c"
 };
 
 // 0x0700BFC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_sa[] = {
-#include "levels/menu/main_menu_seg7.0BFC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0BFC8.ia8.inc.c"
 };
 
 // 0x0700C008
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_shi[] = {
-#include "levels/menu/main_menu_seg7.0C008.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C008.ia8.inc.c"
 };
 
 // 0x0700C048
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_su[] = {
-#include "levels/menu/main_menu_seg7.0C048.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C048.ia8.inc.c"
 };
 
 // 0x0700C088
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_se[] = {
-#include "levels/menu/main_menu_seg7.0C088.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C088.ia8.inc.c"
 };
 
 // 0x0700C0C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_so[] = {
-#include "levels/menu/main_menu_seg7.0C0C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C0C8.ia8.inc.c"
 };
 
 // 0x0700C108
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ta[] = {
-#include "levels/menu/main_menu_seg7.0C108.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C108.ia8.inc.c"
 };
 
 // 0x0700C148
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_chi[] = {
-#include "levels/menu/main_menu_seg7.0C148.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C148.ia8.inc.c"
 };
 
 // 0x0700C188
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_tsu[] = {
-#include "levels/menu/main_menu_seg7.0C188.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C188.ia8.inc.c"
 };
 
 // 0x0700C1C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_te[] = {
-#include "levels/menu/main_menu_seg7.0C1C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C1C8.ia8.inc.c"
 };
 
 // 0x0700C208
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_to[] = {
-#include "levels/menu/main_menu_seg7.0C208.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C208.ia8.inc.c"
 };
 
 // 0x0700C248
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_na[] = {
-#include "levels/menu/main_menu_seg7.0C248.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C248.ia8.inc.c"
 };
 
 // 0x0700C288
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ni[] = {
-#include "levels/menu/main_menu_seg7.0C288.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C288.ia8.inc.c"
 };
 
 // 0x0700C2C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_nu[] = {
-#include "levels/menu/main_menu_seg7.0C2C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C2C8.ia8.inc.c"
 };
 
 // 0x0700C308
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ne[] = {
-#include "levels/menu/main_menu_seg7.0C308.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C308.ia8.inc.c"
 };
 
 // 0x0700C348
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_no[] = {
-#include "levels/menu/main_menu_seg7.0C348.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C348.ia8.inc.c"
 };
 
 // 0x0700C388
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ha[] = {
-#include "levels/menu/main_menu_seg7.0C388.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C388.ia8.inc.c"
 };
 
 // 0x0700C3C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_hi[] = {
-#include "levels/menu/main_menu_seg7.0C3C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C3C8.ia8.inc.c"
 };
 
 // 0x0700C408
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_hu[] = {
-#include "levels/menu/main_menu_seg7.0C408.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C408.ia8.inc.c"
 };
 
 // 0x0700C448
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_he[] = {
-#include "levels/menu/main_menu_seg7.0C448.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C448.ia8.inc.c"
 };
 
 // 0x0700C488
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ho[] = {
-#include "levels/menu/main_menu_seg7.0C488.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C488.ia8.inc.c"
 };
 
 // 0x0700C4C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ma[] = {
-#include "levels/menu/main_menu_seg7.0C4C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C4C8.ia8.inc.c"
 };
 
 // 0x0700C508
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_mi[] = {
-#include "levels/menu/main_menu_seg7.0C508.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C508.ia8.inc.c"
 };
 
 // 0x0700C548
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_mu[] = {
-#include "levels/menu/main_menu_seg7.0C548.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C548.ia8.inc.c"
 };
 
 // 0x0700C588
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_me[] = {
-#include "levels/menu/main_menu_seg7.0C588.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C588.ia8.inc.c"
 };
 
 // 0x0700C5C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_mo[] = {
-#include "levels/menu/main_menu_seg7.0C5C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C5C8.ia8.inc.c"
 };
 
 // 0x0700C608
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ya[] = {
-#include "levels/menu/main_menu_seg7.0C608.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C608.ia8.inc.c"
 };
 
 // 0x0700C648
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_yu[] = {
-#include "levels/menu/main_menu_seg7.0C648.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C648.ia8.inc.c"
 };
 
 // 0x0700C688
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_yo[] = {
-#include "levels/menu/main_menu_seg7.0C688.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C688.ia8.inc.c"
 };
 
 // 0x0700C6C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ra[] = {
-#include "levels/menu/main_menu_seg7.0C6C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C6C8.ia8.inc.c"
 };
 
 // 0x0700C708
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ri[] = {
-#include "levels/menu/main_menu_seg7.0C708.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C708.ia8.inc.c"
 };
 
 // 0x0700C748
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ru[] = {
-#include "levels/menu/main_menu_seg7.0C748.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C748.ia8.inc.c"
 };
 
 // 0x0700C788
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_re[] = {
-#include "levels/menu/main_menu_seg7.0C788.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C788.ia8.inc.c"
 };
 
 // 0x0700C7C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_ro[] = {
-#include "levels/menu/main_menu_seg7.0C7C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C7C8.ia8.inc.c"
 };
 
 // 0x0700C808
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_wa[] = {
-#include "levels/menu/main_menu_seg7.0C808.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C808.ia8.inc.c"
 };
 
 // 0x0700C848
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_wo[] = {
-#include "levels/menu/main_menu_seg7.0C848.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C848.ia8.inc.c"
 };
 
 // 0x0700C888
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_n[] = {
-#include "levels/menu/main_menu_seg7.0C888.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C888.ia8.inc.c"
 };
 
 // 0x0700C8C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_a[] = {
-#include "levels/menu/main_menu_seg7.0C8C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C8C8.ia8.inc.c"
 };
 
 // 0x0700C908
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_i[] = {
-#include "levels/menu/main_menu_seg7.0C908.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C908.ia8.inc.c"
 };
 
 // 0x0700C948
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_u[] = {
-#include "levels/menu/main_menu_seg7.0C948.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C948.ia8.inc.c"
 };
 
 // 0x0700C988
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_e[] = {
-#include "levels/menu/main_menu_seg7.0C988.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C988.ia8.inc.c"
 };
 
 // 0x0700C9C8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_o[] = {
-#include "levels/menu/main_menu_seg7.0C9C8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0C9C8.ia8.inc.c"
 };
 
 // 0x0700CA08
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_ka[] = {
-#include "levels/menu/main_menu_seg7.0CA08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CA08.ia8.inc.c"
 };
 
 // 0x0700CA48
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_yu[] = {
-#include "levels/menu/main_menu_seg7.0CA48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CA48.ia8.inc.c"
 };
 
 // 0x0700CA88
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_yo[] = {
-#include "levels/menu/main_menu_seg7.0CA88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CA88.ia8.inc.c"
 };
 
 // 0x0700CAC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_katakana_small_tsu[] = {
-#include "levels/menu/main_menu_seg7.0CAC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CAC8.ia8.inc.c"
 };
 
 // 0x0700CB08
 ALIGNED8 static const Texture texture_menu_font_char_jp_A[] = {
-#include "levels/menu/main_menu_seg7.0CB08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CB08.ia8.inc.c"
 };
 
 // 0x0700CB48
 ALIGNED8 static const Texture texture_menu_font_char_jp_B[] = {
-#include "levels/menu/main_menu_seg7.0CB48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CB48.ia8.inc.c"
 };
 
 // 0x0700CB88
 ALIGNED8 static const Texture texture_menu_font_char_jp_C[] = {
-#include "levels/menu/main_menu_seg7.0CB88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CB88.ia8.inc.c"
 };
 
 // 0x0700CBC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_D[] = {
-#include "levels/menu/main_menu_seg7.0CBC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CBC8.ia8.inc.c"
 };
 
 // 0x0700CC08
 ALIGNED8 static const Texture texture_menu_font_char_jp_coin[] = {
-#include "levels/menu/main_menu_seg7.0CC08.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CC08.ia8.inc.c"
 };
 
 // 0x0700CC48
 ALIGNED8 static const Texture texture_menu_font_char_jp_star_filled[] = {
-#include "levels/menu/main_menu_seg7.0CC48.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CC48.ia8.inc.c"
 };
 
 // 0x0700CC88
 ALIGNED8 static const Texture texture_menu_font_char_jp_multiply[] = {
-#include "levels/menu/main_menu_seg7.0CC88.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CC88.ia8.inc.c"
 };
 
 // 0x0700CCC8
 ALIGNED8 static const Texture texture_menu_font_char_jp_exclamation[] = {
-#include "levels/menu/main_menu_seg7.0CCC8.ia8.inc.c"
+#include "levels/menu/jp/main_menu_seg7.0CCC8.ia8.inc.c"
 };
 
 #else
@@ -1335,7 +1335,7 @@ ALIGNED8 static const Texture texture_menu_font_char_C[] = {
 #ifdef VERSION_EU
 // 0x0700AF80
 ALIGNED8 static const Texture texture_menu_font_char_D[] = {
-#include "levels/menu/main_menu_seg7_eu.0AF80.ia8.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0AF80.ia8.inc.c"
 };
 
 #else
@@ -1479,12 +1479,12 @@ ALIGNED8 static const Texture texture_menu_font_char_dash[] = {
 #ifdef VERSION_EU
 // 0x0700B640
 ALIGNED8 static const Texture texture_menu_font_char_comma[] = {
-#include "levels/menu/main_menu_seg7_eu.0B640.ia8.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0B640.ia8.inc.c"
 };
 
 // 0x0700B680
 ALIGNED8 static const Texture texture_menu_font_char_apostrophe[] = {
-#include "levels/menu/main_menu_seg7_eu.0B680.ia8.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0B680.ia8.inc.c"
 };
 
 #else
@@ -1534,17 +1534,17 @@ ALIGNED8 static const Texture texture_menu_font_char_ampersand[] = {
 #ifdef VERSION_EU
 // 0x0700B840
 ALIGNED8 static const Texture texture_menu_font_char_umlaut[] = {
-#include "levels/menu/main_menu_seg7_eu.0B840.ia8.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0B840.ia8.inc.c"
 };
 
 // 0x0700B880
 ALIGNED8 static const Texture texture_menu_font_char_cedilla_mayus[] = {
-#include "levels/menu/main_menu_seg7_eu.0B880.ia8.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0B880.ia8.inc.c"
 };
 
 // 0x0700B8C0
 ALIGNED8 static const Texture texture_menu_font_char_colon[] = {
-#include "levels/menu/main_menu_seg7_eu.0B8C0.ia8.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0B8C0.ia8.inc.c"
 };
 #endif
 
@@ -1723,34 +1723,34 @@ UNUSED static const u64 menu_unused_1 = 0;
 
 // 0x0700BDA0 - 0x0700CDA0
 ALIGNED8 static const Texture texture_menu_course_upper[] = {
-#include "levels/menu/main_menu_seg7_eu.0BDA0.rgba16.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0BDA0.rgba16.inc.c"
 };
 
 // 0x0700CDA0 - 0x0700DDA0
 ALIGNED8 static const Texture texture_menu_niveau_upper[] = {
-#include "levels/menu/main_menu_seg7_eu.0CDA0.rgba16.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0CDA0.rgba16.inc.c"
 };
 
 // 0x0700DDA0 - 0x0700EDA0
 ALIGNED8 static const Texture texture_menu_kurs_upper[] = {
-#include "levels/menu/main_menu_seg7_eu.0DDA0.rgba16.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0DDA0.rgba16.inc.c"
 };
 
 // 0x0700EDA0 - 0x0700FDA0
 ALIGNED8 static const Texture texture_menu_course_lower[] = {
-#include "levels/menu/main_menu_seg7_eu.0EDA0.rgba16.inc.c"
+#include "levels/menu/eu/main_menu_seg7_eu.0EDA0.rgba16.inc.c"
 };
 
 #elif defined(VERSION_CN)
 
 // 0x070BCE0 - 0x070CCE0
 ALIGNED8 static const Texture texture_menu_course_upper[] = {
-#include "levels/menu/main_menu_seg7_cn.0BCE0.rgba16.inc.c"
+#include "levels/menu/cn/main_menu_seg7_cn.0BCE0.rgba16.inc.c"
 };
 
 // 0x0700CCE0 - 0x0700DCE0
 ALIGNED8 static const Texture texture_menu_course_lower[] = {
-#include "levels/menu/main_menu_seg7_cn.0CCE0.rgba16.inc.c"
+#include "levels/menu/cn/main_menu_seg7_cn.0CCE0.rgba16.inc.c"
 };
 
 #else

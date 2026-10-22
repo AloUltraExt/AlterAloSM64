@@ -1,5 +1,6 @@
 #include "stdarg.h"
 #include "macros.h"
+#include "PR/os_version.h"
 
 #if LIBULTRA_VERSION >= OS_VER_J
 void __osSyncVPrintf(UNUSED const char *fmt, UNUSED va_list args) {
