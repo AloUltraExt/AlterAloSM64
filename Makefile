@@ -18,14 +18,14 @@ DEFINES :=
 # Build for the N64 (turn this off for ports)
 TARGET_N64 ?= 1
 
+# Various workarounds for weird and/or old toolchains
+CPP_ASSEMBLY ?= 0
+
 # COMPILER - selects the C compiler to use
 #   gcc - uses the GNU C Compiler
 #   clang - uses clang C/C++ frontend for LLVM
 COMPILER ?= gcc
 $(eval $(call validate-option,COMPILER,gcc clang))
-
-# Various workarounds for weird and/or old toolchains
-CPP_ASSEMBLY ?= 0
 
 # VERSION - selects the version of the game to build
 #   jp - builds the 1996 Japanese version
@@ -60,11 +60,7 @@ endif
 GRUCODE ?= f3dex
 $(eval $(call validate-option,GRUCODE, f3dex f3dex2 f3dzex))
 
-ifeq      ($(GRUCODE),f3d_old)
-  DEFINES += F3D_OLD=1
-else ifeq ($(GRUCODE),f3d_new) # Fast3D 2.0H
-  DEFINES += F3D_NEW=1
-else ifeq ($(GRUCODE),f3dex) # Fast3DEX
+ifeq ($(GRUCODE),f3dex) # Fast3DEX
   DEFINES += F3DEX_GBI=1 F3DEX_GBI_SHARED=1
 else ifeq ($(GRUCODE), f3dex2) # Fast3DEX2
   DEFINES += F3DEX_GBI_2=1 F3DEX_GBI_SHARED=1
@@ -187,7 +183,7 @@ DEP_FILES := $(O_FILES:.o=.d) $(BUILD_DIR)/$(LD_SCRIPT).d
 # Compiler Options                                                             #
 #==============================================================================#
 
-# detect prefix for MIPS toolchain
+# Detect prefix for MIPS toolchain
 CROSS := $(call find-mips-toolchain)
 
 ifeq ($(COMPILER),gcc)
@@ -201,14 +197,13 @@ AR            := $(CROSS)ar
 OBJDUMP       := $(CROSS)objdump
 OBJCOPY       := $(CROSS)objcopy
 
-ifeq ($(TARGET_N64),1)
-  TARGET_CFLAGS := -nostdinc -D_LANGUAGE_C
-  CC_CFLAGS := -fno-builtin
-endif
-
 INCLUDE_DIRS := include $(BUILD_DIR) $(BUILD_DIR)/include src .
 ifeq ($(TARGET_N64),1)
   INCLUDE_DIRS += include/gcc
+endif
+
+ifeq ($(TARGET_N64),1)
+  TARGET_CFLAGS := -nostdinc -D_LANGUAGE_C
 endif
 
 # Process libraries
@@ -219,6 +214,7 @@ include mk/lib/libultra.mk
 include mk/lib/libgcc.mk
 LINK_LIBS := $(foreach i,$(LIBS),-l$(i))
 
+# C defines
 C_DEFINES := $(foreach d,$(DEFINES),-D$(d))
 DEF_INC_CFLAGS := $(foreach i,$(INCLUDE_DIRS),-I$(i)) $(C_DEFINES)
 
@@ -563,9 +559,6 @@ $(ROM): $(ELF)
 	$(call print,Building ROM:,$<,$@)
 	$(V)$(OBJCOPY) --pad-to=0x800000 --gap-fill=0xFF $< $@ -O binary
 	$(V)$(N64CKSUM) $@
-
-$(BUILD_DIR)/$(TARGET).objdump: $(ELF)
-	$(OBJDUMP) -D $< > $@
 
 .PHONY: all clean distclean default test load libultra libgoddard libgcc
 # with no prerequisites, .SECONDARY causes no intermediate target to be removed
