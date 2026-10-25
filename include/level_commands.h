@@ -247,8 +247,8 @@ enum LevelCmdGetOrSetVarIds {
 #define LOAD_AREA(area) \
     CMD_BBBB(0x29, 0x04, area, 0x00)
 
-#define CMD2A(unk2) \
-    CMD_BBBB(0x2A, 0x04, unk2, 0x00)
+#define UNLOAD_AREA(unk2) \
+    CMD_BBH(0x2A, 0x04, 0x0000)
 
 #define MARIO_POS(area, yaw, posX, posY, posZ) \
     CMD_BBBB(0x2B, 0x0C, area, 0x00), \

@@ -34,13 +34,20 @@ const LevelScript level_intro_splash_screen[] = {
     LOAD_AREA(/*area*/ 1),
 
     GET_OR_SET(/*op*/ OP_GET, /*var*/ LVL_VAR_GAME_SKIP),
-    JUMP_IF(/*op*/ OP_AND, /*arg*/ GAME_SKIP_TITLE_SCREEN, level_intro_mario_head_regular),
+    JUMP_IF(/*op*/ OP_AND, /*arg*/ GAME_SKIP_TITLE_SCREEN, level_intro_splash_screen_skip),
 
     CALL(/*arg*/ LVL_INTRO_PLAY_ITS_A_ME_MARIO, /*func*/ lvl_intro_update),
     SLEEP(/*frames*/ 75),
     TRANSITION(/*transType*/ WARP_TRANSITION_FADE_INTO_COLOR, /*time*/ 16, /*color*/ 0x00, 0x00, 0x00),
     SLEEP(/*frames*/ 16),
-    CMD2A(/*unk2*/ 1),
+    UNLOAD_AREA(),
+    CLEAR_LEVEL(),
+    SLEEP(/*frames*/ 2),
+    EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_regular),
+};
+
+const LevelScript level_intro_splash_screen_skip[] = {
+    UNLOAD_AREA(),
     CLEAR_LEVEL(),
     SLEEP(/*frames*/ 2),
     EXIT_AND_EXECUTE(/*seg*/ 0x14, _introSegmentRomStart, _introSegmentRomEnd, level_intro_mario_head_regular),

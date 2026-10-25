@@ -17,6 +17,7 @@ extern const f32 intro_seg7_table_0700C880[];
 
 // script
 extern const LevelScript level_intro_splash_screen[];
+extern const LevelScript level_intro_splash_screen_skip[];
 extern const LevelScript level_intro_mario_head_regular[];
 extern const LevelScript level_intro_mario_head_dizzy[];
 extern const LevelScript level_intro_mario_head_regular_skip[];
